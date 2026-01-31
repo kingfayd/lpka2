@@ -1,4 +1,4 @@
-import { hashPassword } from './auth';
+import { hashPassword } from '../lib/auth';
 
 /**
  * Script untuk generate hashed password
