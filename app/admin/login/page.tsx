@@ -89,9 +89,6 @@ export default function AdminLoginPage() {
           </button>
         </form>
 
-        <p className="mt-4 text-center text-sm text-gray-600">
-          Demo: username: <strong>admin</strong>, password: <strong>admin123</strong>
-        </p>
       </div>
     </div>
   );

@@ -27,8 +27,8 @@ export default function Header() {
             className="w-[42px] h-[42px]"
           />
           <div className="hidden sm:block">
-            <div className="text-sm font-light text-gray-500">LPKA TANGERANG</div>
-            <div className="text-base font-semibold text-gray-900">Kelas I</div>
+            <div className="text-sm font-light text-gray-500"> LPKA Kelas I</div>
+            <div className="text-base font-semibold text-gray-900">TANGERANG</div>
           </div>
         </Link>
 

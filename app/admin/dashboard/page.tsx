@@ -93,6 +93,21 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file && sambutanContent) {
+      // Create a preview URL for the uploaded image
+      const previewUrl = URL.createObjectURL(file);
+      setSambutanContent({
+        ...sambutanContent,
+        fotoUrl: previewUrl,
+      });
+      
+      // Store the file for later upload
+      localStorage.setItem('pendingImage', file.name);
+    }
+  };
+
   const handleSaveProfil = async () => {
     if (!profilContent) return;
 

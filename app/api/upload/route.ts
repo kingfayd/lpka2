@@ -7,6 +7,18 @@ const UPLOAD_DIR = path.join(process.cwd(), 'public/uploads');
 
 export async function POST(request: NextRequest) {
   try {
+    // Check if running in Vercel environment
+    const isVercel = process.env.VERCEL === '1';
+    
+    if (isVercel) {
+      return NextResponse.json(
+        { 
+          error: 'Upload tidak tersedia di lingkungan Vercel. Gunakan fitur upload lokal atau gunakan penyimpanan eksternal seperti Cloudinary, AWS S3, atau layanan penyimpanan cloud lainnya.' 
+        },
+        { status: 501 }
+      );
+    }
+
     // Ensure upload directory exists
     if (!existsSync(UPLOAD_DIR)) {
       await mkdir(UPLOAD_DIR, { recursive: true });
