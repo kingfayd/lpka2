@@ -1,31 +1,25 @@
-import fs from 'fs';
-import path from 'path';
-
-const CONTENT_DIR = path.join(process.cwd(), 'public', 'data');
-const PROFIL_FILE = path.join(CONTENT_DIR, 'profil.json');
-const SAMBUTAN_FILE = path.join(CONTENT_DIR, 'sambutan.json');
-
-// Ensure data directory exists
-if (!fs.existsSync(CONTENT_DIR)) {
-  fs.mkdirSync(CONTENT_DIR, { recursive: true });
-}
+import { prisma } from './prisma';
 
 export interface ProfilContent {
+  id?: string;
   title: string;
   deskripsi: string;
   visi: string;
   misi: string[];
   tugasFungsi: string;
   profileImage?: string;
+  updatedAt?: Date;
 }
 
 export interface SambutanContent {
+  id?: string;
   fotoUrl: string;
   nama: string;
   jabatan: string;
   sambutan1: string;
   sambutan2: string;
   sambutan3: string;
+  updatedAt?: Date;
 }
 
 const DEFAULT_CONTENT: ProfilContent = {
@@ -45,20 +39,67 @@ const DEFAULT_CONTENT: ProfilContent = {
 
 export async function getProfilContent(): Promise<ProfilContent> {
   try {
-    if (fs.existsSync(PROFIL_FILE)) {
-      const data = fs.readFileSync(PROFIL_FILE, 'utf-8');
-      return JSON.parse(data);
+    let content = await prisma.profilContent.findFirst();
+    
+    if (!content) {
+      // Create default content if none exists
+      content = await prisma.profilContent.create({
+        data: DEFAULT_CONTENT
+      });
     }
+    
+    return {
+      id: content.id,
+      title: content.title || '',
+      deskripsi: content.deskripsi || '',
+      visi: content.visi || '',
+      misi: content.misi || [],
+      tugasFungsi: content.tugasFungsi || '',
+      profileImage: content.profileImage || undefined,
+      updatedAt: content.updatedAt
+    };
   } catch (error) {
     console.error('Error reading profil content:', error);
+    return DEFAULT_CONTENT;
   }
-  return DEFAULT_CONTENT;
 }
 
-export async function updateProfilContent(content: ProfilContent): Promise<ProfilContent> {
+export async function updateProfilContent(content: Partial<ProfilContent>): Promise<ProfilContent> {
   try {
-    fs.writeFileSync(PROFIL_FILE, JSON.stringify(content, null, 2));
-    return content;
+    const existing = await prisma.profilContent.findFirst();
+    
+    if (existing) {
+      const updated = await prisma.profilContent.update({
+        where: { id: existing.id },
+        data: content
+      });
+      
+      return {
+        id: updated.id,
+        title: updated.title || '',
+        deskripsi: updated.deskripsi || '',
+        visi: updated.visi || '',
+        misi: updated.misi || [],
+        tugasFungsi: updated.tugasFungsi || '',
+        profileImage: updated.profileImage || undefined,
+        updatedAt: updated.updatedAt
+      };
+    } else {
+      const created = await prisma.profilContent.create({
+        data: content as Omit<ProfilContent, 'id' | 'updatedAt'>
+      });
+      
+      return {
+        id: created.id,
+        title: created.title || '',
+        deskripsi: created.deskripsi || '',
+        visi: created.visi || '',
+        misi: created.misi || [],
+        tugasFungsi: created.tugasFungsi || '',
+        profileImage: created.profileImage || undefined,
+        updatedAt: created.updatedAt
+      };
+    }
   } catch (error) {
     console.error('Error updating profil content:', error);
     throw error;
@@ -79,20 +120,67 @@ const DEFAULT_SAMBUTAN: SambutanContent = {
 
 export async function getSambutanContent(): Promise<SambutanContent> {
   try {
-    if (fs.existsSync(SAMBUTAN_FILE)) {
-      const data = fs.readFileSync(SAMBUTAN_FILE, 'utf-8');
-      return JSON.parse(data);
+    let content = await prisma.sambutanContent.findFirst();
+    
+    if (!content) {
+      // Create default content if none exists
+      content = await prisma.sambutanContent.create({
+        data: DEFAULT_SAMBUTAN
+      });
     }
+    
+    return {
+      id: content.id,
+      fotoUrl: content.fotoUrl,
+      nama: content.nama,
+      jabatan: content.jabatan,
+      sambutan1: content.sambutan1,
+      sambutan2: content.sambutan2,
+      sambutan3: content.sambutan3,
+      updatedAt: content.updatedAt
+    };
   } catch (error) {
     console.error('Error reading sambutan content:', error);
+    return DEFAULT_SAMBUTAN;
   }
-  return DEFAULT_SAMBUTAN;
 }
 
-export async function updateSambutanContent(content: SambutanContent): Promise<SambutanContent> {
+export async function updateSambutanContent(content: Partial<SambutanContent>): Promise<SambutanContent> {
   try {
-    fs.writeFileSync(SAMBUTAN_FILE, JSON.stringify(content, null, 2));
-    return content;
+    const existing = await prisma.sambutanContent.findFirst();
+    
+    if (existing) {
+      const updated = await prisma.sambutanContent.update({
+        where: { id: existing.id },
+        data: content
+      });
+      
+      return {
+        id: updated.id,
+        fotoUrl: updated.fotoUrl,
+        nama: updated.nama,
+        jabatan: updated.jabatan,
+        sambutan1: updated.sambutan1,
+        sambutan2: updated.sambutan2,
+        sambutan3: updated.sambutan3,
+        updatedAt: updated.updatedAt
+      };
+    } else {
+      const created = await prisma.sambutanContent.create({
+        data: content as Omit<SambutanContent, 'id' | 'updatedAt'>
+      });
+      
+      return {
+        id: created.id,
+        fotoUrl: created.fotoUrl,
+        nama: created.nama,
+        jabatan: created.jabatan,
+        sambutan1: created.sambutan1,
+        sambutan2: created.sambutan2,
+        sambutan3: created.sambutan3,
+        updatedAt: created.updatedAt
+      };
+    }
   } catch (error) {
     console.error('Error updating sambutan content:', error);
     throw error;

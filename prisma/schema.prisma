@@ -1,0 +1,30 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+}
+
+
+model ProfilContent {
+  id           String   @id @default(cuid())
+  title        String?
+  deskripsi    String?
+  visi         String?
+  misi         String[]
+  tugasFungsi  String?
+  profileImage String?
+  updatedAt    DateTime @default(now()) @updatedAt
+}
+
+model SambutanContent {
+  id        String   @id @default(cuid())
+  fotoUrl   String
+  nama      String
+  jabatan   String
+  sambutan1 String
+  sambutan2 String
+  sambutan3 String
+  updatedAt DateTime @default(now()) @updatedAt
+}
