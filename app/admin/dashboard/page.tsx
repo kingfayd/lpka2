@@ -206,8 +206,8 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab('profil')}
             className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'profil'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 hover:text-gray-800'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-800'
               }`}
           >
             Profil
@@ -215,8 +215,8 @@ export default function AdminDashboard() {
           <button
             onClick={() => setActiveTab('sambutan')}
             className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'sambutan'
-                ? 'border-blue-600 text-blue-600'
-                : 'border-transparent text-gray-600 hover:text-gray-800'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-800'
               }`}
           >
             Sambutan & Foto Ketua
@@ -225,7 +225,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Content */}
-      <div className="max-w-6xl mx-auto px-6 py-8">
+      <div className="max-w-6xl mx-auto px-4 py-6 sm:px-6 sm:py-8">
         {error && (
           <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
             {error}
@@ -287,9 +287,9 @@ export default function AdminDashboard() {
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Misi
               </label>
-              <div className="space-y-2 mb-4">
+              <div className="space-y-4 mb-4">
                 {profilContent.misi.map((item, index) => (
-                  <div key={index} className="flex items-center gap-2">
+                  <div key={index} className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
                     <input
                       type="text"
                       value={item}
@@ -298,11 +298,11 @@ export default function AdminDashboard() {
                         newMisi[index] = e.target.value;
                         setProfilContent({ ...profilContent, misi: newMisi });
                       }}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                      className="w-full flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     />
                     <button
                       onClick={() => handleRemoveMisi(index)}
-                      className="px-3 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+                      className="w-full sm:w-auto px-3 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
                     >
                       Hapus
                     </button>
@@ -310,18 +310,18 @@ export default function AdminDashboard() {
                 ))}
               </div>
 
-              <div className="flex gap-2">
+              <div className="flex flex-col sm:flex-row gap-2">
                 <input
                   type="text"
                   value={misiInput}
                   onChange={(e) => setMisiInput(e.target.value)}
                   placeholder="Tambah misi baru"
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                  className="w-full flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   onKeyPress={(e) => e.key === 'Enter' && handleAddMisi()}
                 />
                 <button
                   onClick={handleAddMisi}
-                  className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
                 >
                   Tambah
                 </button>
@@ -342,17 +342,17 @@ export default function AdminDashboard() {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-100">
               <button
                 onClick={handleSaveProfil}
                 disabled={saving}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
+                className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium transition-colors"
               >
                 {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
               </button>
               <Link
                 href="/profil"
-                className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 font-medium"
+                className="w-full sm:w-auto px-6 py-2.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium text-center transition-colors"
               >
                 Preview
               </Link>
