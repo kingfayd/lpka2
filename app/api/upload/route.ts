@@ -1,29 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { writeFile, mkdir } from 'fs/promises';
-import { existsSync } from 'fs';
-import path from 'path';
-
-const UPLOAD_DIR = path.join(process.cwd(), 'public/uploads');
+import { supabase } from '@/lib/supabase';
 
 export async function POST(request: NextRequest) {
   try {
-    // Check if running in Vercel environment
-    const isVercel = process.env.VERCEL === '1';
-    
-    if (isVercel) {
-      return NextResponse.json(
-        { 
-          error: 'Upload tidak tersedia di lingkungan Vercel. Gunakan fitur upload lokal atau gunakan penyimpanan eksternal seperti Cloudinary, AWS S3, atau layanan penyimpanan cloud lainnya.' 
-        },
-        { status: 501 }
-      );
-    }
-
-    // Ensure upload directory exists
-    if (!existsSync(UPLOAD_DIR)) {
-      await mkdir(UPLOAD_DIR, { recursive: true });
-    }
-
     const formData = await request.formData();
     const file = formData.get('file') as File;
 
@@ -50,16 +29,39 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const bytes = await file.arrayBuffer();
     const timestamp = Date.now();
+    // Sanitize filename
     const filename = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
-    const filepath = path.join(UPLOAD_DIR, filename);
+    const bucketName = 'uploads';
 
-    await writeFile(filepath, Buffer.from(bytes));
+    // Convert file to buffer for upload
+    const bytes = await file.arrayBuffer();
+    const buffer = Buffer.from(bytes);
+
+    // Upload to Supabase Storage
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from(bucketName)
+      .upload(filename, buffer, {
+        contentType: file.type,
+        upsert: false
+      });
+
+    if (uploadError) {
+      console.error('Supabase Upload Error:', uploadError);
+      return NextResponse.json(
+        { error: `Gagal upload ke Supabase: ${uploadError.message}` },
+        { status: 500 }
+      );
+    }
+
+    // Get Public URL
+    const { data: publicUrlData } = supabase.storage
+      .from(bucketName)
+      .getPublicUrl(filename);
 
     return NextResponse.json(
       {
-        url: `/uploads/${filename}`,
+        url: publicUrlData.publicUrl,
         filename,
       },
       { status: 200 }
