@@ -17,12 +17,12 @@ export default function SambutanSection() {
 
   useEffect(() => {
     fetchContent();
-    
+
     // Refresh data setiap 2 detik untuk real-time updates
     const interval = setInterval(() => {
       fetchContent();
     }, 2000);
-    
+
     return () => clearInterval(interval);
   }, []);
 
@@ -31,14 +31,14 @@ export default function SambutanSection() {
       // Force no-cache dengan timestamp dan cache-busting
       const url = new URL('/api/content/sambutan', window.location.origin);
       url.searchParams.set('_t', Date.now().toString());
-      
+
       const response = await fetch(url.toString(), {
         cache: 'no-store',
         headers: {
           'Cache-Control': 'no-cache',
         },
       });
-      
+
       if (response.ok) {
         const data = await response.json();
         console.log('[SambutanSection] Fetched data:', data);
@@ -64,7 +64,7 @@ export default function SambutanSection() {
       className="relative w-full bg-white py-20 px-6"
     >
       <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
-        
+
         {/* FOTO KETUA */}
         <div className="flex justify-center md:justify-start">
           <img

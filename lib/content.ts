@@ -40,14 +40,14 @@ const DEFAULT_CONTENT: ProfilContent = {
 export async function getProfilContent(): Promise<ProfilContent> {
   try {
     let content = await prisma.profilContent.findFirst();
-    
+
     if (!content) {
       // Create default content if none exists
       content = await prisma.profilContent.create({
         data: DEFAULT_CONTENT
       });
     }
-    
+
     return {
       id: content.id,
       title: content.title || '',
@@ -67,13 +67,13 @@ export async function getProfilContent(): Promise<ProfilContent> {
 export async function updateProfilContent(content: Partial<ProfilContent>): Promise<ProfilContent> {
   try {
     const existing = await prisma.profilContent.findFirst();
-    
+
     if (existing) {
       const updated = await prisma.profilContent.update({
         where: { id: existing.id },
         data: content
       });
-      
+
       return {
         id: updated.id,
         title: updated.title || '',
@@ -88,7 +88,7 @@ export async function updateProfilContent(content: Partial<ProfilContent>): Prom
       const created = await prisma.profilContent.create({
         data: content as Omit<ProfilContent, 'id' | 'updatedAt'>
       });
-      
+
       return {
         id: created.id,
         title: created.title || '',
@@ -120,15 +120,20 @@ const DEFAULT_SAMBUTAN: SambutanContent = {
 
 export async function getSambutanContent(): Promise<SambutanContent> {
   try {
-    let content = await prisma.sambutanContent.findFirst();
-    
+    const contentList = await prisma.sambutanContent.findMany({
+      orderBy: { updatedAt: 'desc' },
+      take: 1
+    });
+
+    let content = contentList[0];
+
     if (!content) {
       // Create default content if none exists
       content = await prisma.sambutanContent.create({
         data: DEFAULT_SAMBUTAN
       });
     }
-    
+
     return {
       id: content.id,
       fotoUrl: content.fotoUrl,
@@ -147,14 +152,33 @@ export async function getSambutanContent(): Promise<SambutanContent> {
 
 export async function updateSambutanContent(content: Partial<SambutanContent>): Promise<SambutanContent> {
   try {
-    const existing = await prisma.sambutanContent.findFirst();
-    
-    if (existing) {
+    const existing = await prisma.sambutanContent.findMany({
+      orderBy: { updatedAt: 'desc' }
+    });
+
+    // Cleanup duplicates if any
+    if (existing.length > 1) {
+      console.warn(`[Content] Found ${existing.length} sambutan records. Cleaning up...`);
+      const keepId = existing[0].id; // Keep the most recently updated one
+      const deleteIds = existing.slice(1).map(r => r.id);
+
+      await prisma.sambutanContent.deleteMany({
+        where: { id: { in: deleteIds } }
+      });
+      console.log(`[Content] Deleted ${deleteIds.length} duplicate records.`);
+    }
+
+    const currentRecord = existing[0];
+
+    if (currentRecord) {
+      console.log(`[Content] Updating existing sambutan record: ${currentRecord.id}`);
       const updated = await prisma.sambutanContent.update({
-        where: { id: existing.id },
+        where: { id: currentRecord.id },
         data: content
       });
-      
+
+      console.log(`[Content] Updated sambutan successfully. New fotoUrl: ${updated.fotoUrl}`);
+
       return {
         id: updated.id,
         fotoUrl: updated.fotoUrl,
@@ -166,10 +190,11 @@ export async function updateSambutanContent(content: Partial<SambutanContent>): 
         updatedAt: updated.updatedAt
       };
     } else {
+      console.log('[Content] improved creating new sambutan record');
       const created = await prisma.sambutanContent.create({
         data: content as Omit<SambutanContent, 'id' | 'updatedAt'>
       });
-      
+
       return {
         id: created.id,
         fotoUrl: created.fotoUrl,

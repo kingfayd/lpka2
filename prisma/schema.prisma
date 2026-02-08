@@ -4,15 +4,15 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
-
 
 model ProfilContent {
   id           String   @id @default(cuid())
   title        String?
   deskripsi    String?
   visi         String?
-  misi         String[]
+  misi         String[]   // ✅ BOLEH di PostgreSQL
   tugasFungsi  String?
   profileImage String?
   updatedAt    DateTime @default(now()) @updatedAt

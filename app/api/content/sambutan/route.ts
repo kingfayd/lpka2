@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getSambutanContent, updateSambutanContent } from '@/lib/content';
 import { verifyToken } from '@/lib/auth';
 
+export const dynamic = 'force-dynamic';
+
 function getTokenFromRequest(request: NextRequest): string | null {
   const authHeader = request.headers.get('authorization');
   if (authHeader?.startsWith('Bearer ')) {
