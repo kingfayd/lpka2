@@ -205,21 +205,19 @@ export default function AdminDashboard() {
         <div className="max-w-6xl mx-auto px-6 flex gap-6">
           <button
             onClick={() => setActiveTab('profil')}
-            className={`py-3 px-4 font-medium border-b-2 transition ${
-              activeTab === 'profil'
+            className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'profil'
                 ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-600 hover:text-gray-800'
-            }`}
+              }`}
           >
             Profil
           </button>
           <button
             onClick={() => setActiveTab('sambutan')}
-            className={`py-3 px-4 font-medium border-b-2 transition ${
-              activeTab === 'sambutan'
+            className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'sambutan'
                 ? 'border-blue-600 text-blue-600'
                 : 'border-transparent text-gray-600 hover:text-gray-800'
-            }`}
+              }`}
           >
             Sambutan & Foto Ketua
           </button>
@@ -253,7 +251,7 @@ export default function AdminDashboard() {
                 onChange={(e) =>
                   setProfilContent({ ...profilContent, title: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
 
@@ -267,7 +265,7 @@ export default function AdminDashboard() {
                   setProfilContent({ ...profilContent, deskripsi: e.target.value })
                 }
                 rows={4}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
 
@@ -281,7 +279,7 @@ export default function AdminDashboard() {
                   setProfilContent({ ...profilContent, visi: e.target.value })
                 }
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
 
@@ -300,7 +298,7 @@ export default function AdminDashboard() {
                         newMisi[index] = e.target.value;
                         setProfilContent({ ...profilContent, misi: newMisi });
                       }}
-                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                     />
                     <button
                       onClick={() => handleRemoveMisi(index)}
@@ -318,7 +316,7 @@ export default function AdminDashboard() {
                   value={misiInput}
                   onChange={(e) => setMisiInput(e.target.value)}
                   placeholder="Tambah misi baru"
-                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
                   onKeyPress={(e) => e.key === 'Enter' && handleAddMisi()}
                 />
                 <button
@@ -340,7 +338,7 @@ export default function AdminDashboard() {
                   setProfilContent({ ...profilContent, tugasFungsi: e.target.value })
                 }
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
 
@@ -411,7 +409,7 @@ export default function AdminDashboard() {
                 onChange={(e) =>
                   setSambutanContent({ ...sambutanContent, nama: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
 
@@ -425,7 +423,7 @@ export default function AdminDashboard() {
                 onChange={(e) =>
                   setSambutanContent({ ...sambutanContent, jabatan: e.target.value })
                 }
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
 
@@ -439,7 +437,7 @@ export default function AdminDashboard() {
                   setSambutanContent({ ...sambutanContent, sambutan1: e.target.value })
                 }
                 rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
 
@@ -453,7 +451,7 @@ export default function AdminDashboard() {
                   setSambutanContent({ ...sambutanContent, sambutan2: e.target.value })
                 }
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
 
@@ -467,7 +465,7 @@ export default function AdminDashboard() {
                   setSambutanContent({ ...sambutanContent, sambutan3: e.target.value })
                 }
                 rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>
 

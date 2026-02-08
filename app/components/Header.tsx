@@ -5,14 +5,22 @@ import Image from "next/image";
 import { useState } from "react";
 import { ChevronDown, Menu, X } from "lucide-react";
 
+import { usePathname } from "next/navigation";
+
 export default function Header() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
+
+  // Don't show header on admin pages
+  if (pathname?.startsWith("/admin")) {
+    return null;
+  }
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 mx-6 mt-3 rounded-3xl">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
-        
+
         {/* LOGO + TITLE */}
         <Link
           href="/"
@@ -35,15 +43,15 @@ export default function Header() {
         {/* DESKTOP MENU */}
         <nav className="hidden lg:flex items-center gap-8">
           {/* Menu Items */}
-          <Link 
-            href="/" 
+          <Link
+            href="/"
             className="text-sm text-gray-700 font-medium hover:text-gray-900 transition-colors relative group"
           >
             Beranda
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 group-hover:w-full transition-all duration-300" />
           </Link>
 
-          <div 
+          <div
             className="relative group"
             onMouseEnter={() => setActiveDropdown("profil")}
             onMouseLeave={() => setActiveDropdown(null)}
@@ -65,16 +73,16 @@ export default function Header() {
             </div>
           </div>
 
-          <Link 
-            href="/layananpublik" 
+          <Link
+            href="/layananpublik"
             className="text-sm text-gray-700 font-medium hover:text-gray-900 transition-colors relative group"
           >
             Layanan Publik
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 group-hover:w-full transition-all duration-300" />
           </Link>
 
-          <Link 
-            href="/kontak" 
+          <Link
+            href="/kontak"
             className="text-sm text-gray-700 font-medium hover:text-gray-900 transition-colors relative group"
           >
             Kontak
@@ -100,8 +108,8 @@ export default function Header() {
       {open && (
         <div className="lg:hidden bg-white border-t border-gray-100">
           <nav className="flex flex-col px-6 py-4 gap-2">
-            <Link 
-              href="/" 
+            <Link
+              href="/"
               className="px-4 py-2.5 text-sm text-gray-700 font-medium hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
               onClick={() => setOpen(false)}
             >
@@ -113,29 +121,29 @@ export default function Header() {
               className="px-4 py-2.5 text-sm text-gray-700 font-medium hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-between"
             >
               Profil
-              <ChevronDown 
-                size={16} 
+              <ChevronDown
+                size={16}
                 className={`transition-transform duration-300 ${activeDropdown === "profil" ? "rotate-180" : ""}`}
               />
             </button>
             {activeDropdown === "profil" && (
               <div className="bg-gray-50 rounded-lg">
-                <Link 
-                  href="/profil" 
+                <Link
+                  href="/profil"
                   className="block px-6 py-2.5 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                   onClick={() => { setOpen(false); setActiveDropdown(null); }}
                 >
                   Profil Lembaga
                 </Link>
-                <Link 
-                  href="/profil#visi-misi" 
+                <Link
+                  href="/profil#visi-misi"
                   className="block px-6 py-2.5 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
                   onClick={() => { setOpen(false); setActiveDropdown(null); }}
                 >
                   Visi & Misi
                 </Link>
-                <Link 
-                  href="/profil#struktur" 
+                <Link
+                  href="/profil#struktur"
                   className="block px-6 py-2.5 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
                   onClick={() => { setOpen(false); setActiveDropdown(null); }}
                 >
@@ -144,16 +152,16 @@ export default function Header() {
               </div>
             )}
 
-            <Link 
-              href="/layananpublik" 
+            <Link
+              href="/layananpublik"
               className="px-4 py-2.5 text-sm text-gray-700 font-medium hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
               onClick={() => setOpen(false)}
             >
               Layanan Publik
             </Link>
 
-            <Link 
-              href="/kontak" 
+            <Link
+              href="/kontak"
               className="px-4 py-2.5 text-sm text-gray-700 font-medium hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
               onClick={() => setOpen(false)}
             >
