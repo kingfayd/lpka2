@@ -10,12 +10,12 @@ import { usePathname } from "next/navigation";
 export default function Header() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  // Don't show header on admin pages
-  if (pathname?.startsWith("/admin")) {
+  // Don't show header on admin or article detail pages
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/berita")) {
     return null;
   }
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 mx-6 mt-3 rounded-3xl">

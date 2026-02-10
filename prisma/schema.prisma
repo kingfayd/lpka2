@@ -28,3 +28,12 @@ model SambutanContent {
   sambutan3 String
   updatedAt DateTime @default(now()) @updatedAt
 }
+
+model Article {
+  id        String   @id @default(cuid())
+  title     String
+  content   String   // Text content
+  imageUrl  String?  // Main photo URL
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
