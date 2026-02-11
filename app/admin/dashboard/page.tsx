@@ -29,13 +29,42 @@ interface Article {
   createdAt: string;
 }
 
+interface Pejabat {
+  id: string;
+  nama: string;
+  jabatan: string;
+  fotoUrl?: string;
+  urutan: number;
+}
+
+interface LayananContent {
+  title: string;
+  deskripsi: string;
+}
+
+interface LayananItem {
+  id: string;
+  title: string;
+  deskripsi?: string;
+  fotoUrl: string;
+  type: string;
+  urutan: number;
+}
+
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'profil' | 'sambutan' | 'artikel'>('profil');
+  const [activeTab, setActiveTab] = useState<'profil' | 'sambutan' | 'artikel' | 'pejabat' | 'layanan'>('profil');
   const [profilContent, setProfilContent] = useState<ProfilContent | null>(null);
   const [sambutanContent, setSambutanContent] = useState<SambutanContent | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
+  const [pejabats, setPejabats] = useState<Pejabat[]>([]);
+  const [layananContent, setLayananContent] = useState<LayananContent | null>(null);
+  const [layananItems, setLayananItems] = useState<LayananItem[]>([]);
   const [editingArticle, setEditingArticle] = useState<Partial<Article> | null>(null);
+  const [editingPejabat, setEditingPejabat] = useState<Partial<Pejabat> | null>(null);
+  const [editingLayananItem, setEditingLayananItem] = useState<Partial<LayananItem> | null>(null);
   const [isArticleFormOpen, setIsArticleFormOpen] = useState(false);
+  const [isPejabatFormOpen, setIsPejabatFormOpen] = useState(false);
+  const [isLayananItemFormOpen, setIsLayananItemFormOpen] = useState(false);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -71,6 +100,21 @@ export default function AdminDashboard() {
       const articlesRes = await fetch('/api/articles');
       if (articlesRes.ok) {
         setArticles(await articlesRes.json());
+      }
+
+      const pejabatRes = await fetch('/api/pejabat');
+      if (pejabatRes.ok) {
+        setPejabats(await pejabatRes.json());
+      }
+
+      const layananContentRes = await fetch('/api/content/layanan');
+      if (layananContentRes.ok) {
+        setLayananContent(await layananContentRes.json());
+      }
+
+      const layananItemsRes = await fetch('/api/layanan');
+      if (layananItemsRes.ok) {
+        setLayananItems(await layananItemsRes.json());
       }
 
     } catch (err) {
@@ -285,6 +329,195 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleSavePejabat = async () => {
+    if (!editingPejabat || !editingPejabat.nama || !editingPejabat.jabatan) {
+      setError('Nama dan Jabatan wajib diisi');
+      return;
+    }
+
+    setSaving(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const url = editingPejabat.id
+        ? `/api/pejabat/${editingPejabat.id}`
+        : '/api/pejabat';
+
+      const method = editingPejabat.id ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(editingPejabat),
+      });
+
+      if (!response.ok) throw new Error('Gagal menyimpan data pejabat');
+
+      setSuccess('Data pejabat berhasil disimpan!');
+      setTimeout(() => setSuccess(''), 3000);
+
+      // Refresh data
+      const res = await fetch('/api/pejabat');
+      if (res.ok) {
+        setPejabats(await res.json());
+      }
+
+      setIsPejabatFormOpen(false);
+      setEditingPejabat(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeletePejabat = async (id: string) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus data pejabat ini?')) return;
+
+    try {
+      const response = await fetch(`/api/pejabat/${id}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) throw new Error('Gagal menghapus data pejabat');
+
+      setSuccess('Data pejabat berhasil dihapus!');
+      setTimeout(() => setSuccess(''), 3000);
+
+      setPejabats(pejabats.filter(p => p.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal menghapus');
+    }
+  };
+
+  const handleUploadPejabatImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    setError('');
+
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Upload gagal');
+
+      const data = await response.json();
+      setEditingPejabat(prev => ({ ...prev, fotoUrl: data.url }));
+    } catch (err) {
+      setError('Gagal upload gambar pejabat');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSaveLayananContent = async () => {
+    if (!layananContent) return;
+    setSaving(true);
+    setError('');
+    setSuccess('');
+    try {
+      const response = await fetch('/api/content/layanan', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(layananContent),
+      });
+      if (!response.ok) throw new Error('Gagal menyimpan');
+      setSuccess('Konten layanan berhasil diupdate!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveLayananItem = async () => {
+    if (!editingLayananItem || !editingLayananItem.title) {
+      setError('Judul wajib diisi');
+      return;
+    }
+
+    if (editingLayananItem.type === 'integrasi' && !editingLayananItem.fotoUrl) {
+      setError('Foto poster wajib diisi untuk Layanan Integrasi');
+      return;
+    }
+
+    setSaving(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const url = editingLayananItem.id
+        ? `/api/layanan/${editingLayananItem.id}`
+        : '/api/layanan';
+
+      const method = editingLayananItem.id ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(editingLayananItem),
+      });
+
+      if (!response.ok) throw new Error('Gagal menyimpan item layanan');
+
+      setSuccess('Item layanan berhasil disimpan!');
+      setTimeout(() => setSuccess(''), 3000);
+
+      const res = await fetch('/api/layanan');
+      if (res.ok) setLayananItems(await res.json());
+
+      setIsLayananItemFormOpen(false);
+      setEditingLayananItem(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteLayananItem = async (id: string) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus item ini?')) return;
+    try {
+      const response = await fetch(`/api/layanan/${id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Gagal menghapus');
+      setSuccess('Item berhasil dihapus!');
+      setTimeout(() => setSuccess(''), 3000);
+      setLayananItems(layananItems.filter(i => i.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal menghapus');
+    }
+  };
+
+  const handleUploadLayananItemImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError('');
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await fetch('/api/upload', { method: 'POST', body: formData });
+      if (!response.ok) throw new Error('Upload gagal');
+      const data = await response.json();
+      setEditingLayananItem(prev => ({ ...prev, fotoUrl: data.url }));
+    } catch (err) {
+      setError('Gagal upload gambar');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleLogout = async () => {
     await fetch('/api/auth/logout', { method: 'POST' });
     localStorage.removeItem('adminToken');
@@ -343,6 +576,24 @@ export default function AdminDashboard() {
               }`}
           >
             Artikel / Berita
+          </button>
+          <button
+            onClick={() => setActiveTab('pejabat')}
+            className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'pejabat'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+          >
+            Profil Pejabat
+          </button>
+          <button
+            onClick={() => setActiveTab('layanan')}
+            className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'layanan'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+          >
+            Layanan Publik
           </button>
         </div>
       </div>
@@ -775,6 +1026,363 @@ export default function AdminDashboard() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* PEJABAT TAB */}
+        {activeTab === 'pejabat' && (
+          <div className="bg-white rounded-lg shadow p-6">
+            {!isPejabatFormOpen ? (
+              <>
+                <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-xl font-bold text-gray-800">Daftar Pejabat</h2>
+                  <button
+                    onClick={() => {
+                      setEditingPejabat({ urutan: pejabats.length });
+                      setIsPejabatFormOpen(true);
+                    }}
+                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                  >
+                    + Tambah Pejabat
+                  </button>
+                </div>
+
+                <div className="space-y-4">
+                  {pejabats.length === 0 ? (
+                    <p className="text-gray-500 text-center py-8">Belum ada data pejabat.</p>
+                  ) : (
+                    pejabats.map((pejabat) => (
+                      <div key={pejabat.id} className="border p-4 rounded-lg flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
+                        <div className="flex gap-4 items-center">
+                          <div className="w-12 h-16 bg-gray-100 flex-shrink-0 rounded overflow-hidden">
+                            {pejabat.fotoUrl ? (
+                              <img src={pejabat.fotoUrl} alt={pejabat.nama} className="w-full h-full object-cover" />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Foto</div>
+                            )}
+                          </div>
+                          <div>
+                            <h3 className="font-bold text-base">{pejabat.nama}</h3>
+                            <p className="text-sm text-gray-500">{pejabat.jabatan}</p>
+                            <p className="text-xs text-gray-400">Urutan: {pejabat.urutan}</p>
+                          </div>
+                        </div>
+                        <div className="flex gap-2 w-full sm:w-auto mt-2 sm:mt-0">
+                          <button
+                            onClick={() => {
+                              setEditingPejabat(pejabat);
+                              setIsPejabatFormOpen(true);
+                            }}
+                            className="flex-1 sm:flex-none px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 text-sm"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeletePejabat(pejabat.id)}
+                            className="flex-1 sm:flex-none px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 text-sm"
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </>
+            ) : (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center border-b pb-4">
+                  <h2 className="text-xl font-bold text-gray-800">
+                    {editingPejabat?.id ? 'Edit Data Pejabat' : 'Tambah Pejabat Baru'}
+                  </h2>
+                  <button
+                    onClick={() => {
+                      setIsPejabatFormOpen(false);
+                      setEditingPejabat(null);
+                    }}
+                    className="text-gray-500 hover:text-gray-700"
+                  >
+                    Batal
+                  </button>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div className="space-y-6">
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Nama Lengkap
+                      </label>
+                      <input
+                        type="text"
+                        value={editingPejabat?.nama || ''}
+                        onChange={(e) =>
+                          setEditingPejabat(prev => ({ ...prev, nama: e.target.value }))
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        placeholder="Contoh: Budi Santoso, S.H."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Jabatan
+                      </label>
+                      <input
+                        type="text"
+                        value={editingPejabat?.jabatan || ''}
+                        onChange={(e) =>
+                          setEditingPejabat(prev => ({ ...prev, jabatan: e.target.value }))
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                        placeholder="Contoh: Kepala Sub Bagian Tata Usaha"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                        Urutan Tampilan
+                      </label>
+                      <input
+                        type="number"
+                        value={editingPejabat?.urutan || 0}
+                        onChange={(e) =>
+                          setEditingPejabat(prev => ({ ...prev, urutan: parseInt(e.target.value) || 0 }))
+                        }
+                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                      />
+                      <p className="text-xs text-gray-500 mt-1">Angka lebih kecil akan muncul lebih awal.</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Foto Pejabat
+                    </label>
+                    <div className="space-y-4">
+                      {editingPejabat?.fotoUrl ? (
+                        <div className="relative w-40 h-52 mx-auto sm:mx-0">
+                          <img
+                            src={editingPejabat.fotoUrl}
+                            alt="Preview"
+                            className="w-full h-full object-cover rounded-lg"
+                          />
+                          <button
+                            onClick={() => setEditingPejabat(prev => ({ ...prev, fotoUrl: '' }))}
+                            className="absolute top-2 right-2 bg-red-600 text-white p-1 rounded-full text-xs"
+                          >
+                            Hapus
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="w-40 h-52 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400 mx-auto sm:mx-0">
+                          Belum ada foto
+                        </div>
+                      )}
+                      <div>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleUploadPejabatImage}
+                          disabled={uploading}
+                          className="block w-full text-sm text-gray-500
+                            file:mr-4 file:py-2 file:px-4
+                            file:rounded-lg file:border-0
+                            file:text-sm file:font-semibold
+                            file:bg-blue-50 file:text-blue-700
+                            hover:file:bg-blue-100
+                            disabled:opacity-50"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="flex gap-3 pt-4 border-t border-gray-100">
+                  <button
+                    onClick={handleSavePejabat}
+                    disabled={saving || uploading}
+                    className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
+                  >
+                    {saving ? 'Menyimpan...' : 'Simpan Data Pejabat'}
+                  </button>
+                  <button
+                    onClick={() => {
+                      setIsPejabatFormOpen(false);
+                      setEditingPejabat(null);
+                    }}
+                    className="px-6 py-2.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium"
+                  >
+                    Batal
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* LAYANAN TAB */}
+        {activeTab === 'layanan' && (
+          <div className="space-y-8">
+            {/* HEADER CONTENT */}
+            {layananContent && (
+              <div className="bg-white rounded-lg shadow p-6 space-y-6">
+                <h2 className="text-xl font-bold text-gray-800 border-b pb-4">Konten Header Layanan</h2>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Judul Halaman</label>
+                  <input
+                    type="text"
+                    value={layananContent.title}
+                    onChange={(e) => setLayananContent({ ...layananContent, title: e.target.value })}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Halaman</label>
+                  <textarea
+                    value={layananContent.deskripsi}
+                    onChange={(e) => setLayananContent({ ...layananContent, deskripsi: e.target.value })}
+                    rows={4}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                  />
+                </div>
+                <button
+                  onClick={handleSaveLayananContent}
+                  disabled={saving}
+                  className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
+                >
+                  {saving ? 'Menyimpan...' : 'Simpan Perubahan Header'}
+                </button>
+              </div>
+            )}
+
+            {/* SERVICE ITEMS */}
+            <div className="bg-white rounded-lg shadow p-6">
+              {!isLayananItemFormOpen ? (
+                <>
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-800">Poster Alur & Layanan</h2>
+                    <button
+                      onClick={() => {
+                        setEditingLayananItem({ type: 'integrasi', urutan: layananItems.length });
+                        setIsLayananItemFormOpen(true);
+                      }}
+                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                    >
+                      + Tambah Poster
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {['integrasi', 'kunjungan'].map(type => (
+                      <div key={type} className="space-y-4">
+                        <h3 className="font-bold text-lg text-gray-700 capitalize border-l-4 border-blue-500 pl-3">
+                          {type === 'integrasi' ? 'Layanan Integrasi' : 'Alur Kunjungan'}
+                        </h3>
+                        {layananItems.filter(i => i.type === type).length === 0 ? (
+                          <p className="text-gray-500 text-sm">Belum ada poster.</p>
+                        ) : (
+                          layananItems.filter(i => i.type === type).map((item) => (
+                            <div key={item.id} className="border p-4 rounded-lg flex gap-4 items-center justify-between">
+                              <div className="flex gap-4 items-center">
+                                {item.type === 'integrasi' && (
+                                  <div className="w-16 h-20 bg-gray-100 flex-shrink-0 rounded overflow-hidden">
+                                    <img src={item.fotoUrl} alt={item.title} className="w-full h-full object-cover" />
+                                  </div>
+                                )}
+                                <div>
+                                  <h4 className="font-bold text-sm">{item.title}</h4>
+                                </div>
+                              </div>
+                              <div className="flex flex-col gap-1">
+                                <button
+                                  onClick={() => {
+                                    setEditingLayananItem(item);
+                                    setIsLayananItemFormOpen(true);
+                                  }}
+                                  className="px-2 py-1 bg-yellow-500 text-white rounded text-xs"
+                                >
+                                  Edit
+                                </button>
+                                <button
+                                  onClick={() => handleDeleteLayananItem(item.id)}
+                                  className="px-2 py-1 bg-red-500 text-white rounded text-xs"
+                                >
+                                  Hapus
+                                </button>
+                              </div>
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-gray-800 border-b pb-4">
+                    {editingLayananItem?.id ? 'Edit Poster' : 'Tambah Poster Baru'}
+                  </h2>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">
+                          {editingLayananItem?.type === 'kunjungan' ? 'Teks Alur' : 'Judul Poster'}
+                        </label>
+                        <input
+                          type="text"
+                          value={editingLayananItem?.title || ''}
+                          onChange={(e) => setEditingLayananItem(prev => ({ ...prev, title: e.target.value }))}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900"
+                          placeholder={editingLayananItem?.type === 'kunjungan' ? 'Contoh: Masuk melalui gerbang utama' : 'Contoh: Layanan Kunjungan Online'}
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Tipe</label>
+                        <select
+                          value={editingLayananItem?.type || 'integrasi'}
+                          onChange={(e) => setEditingLayananItem(prev => ({ ...prev, type: e.target.value }))}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900"
+                        >
+                          <option value="integrasi">Layanan Integrasi (Poster)</option>
+                          <option value="kunjungan">Alur Kunjungan (Teks)</option>
+                        </select>
+                      </div>
+                    </div>
+                    {editingLayananItem?.type === 'integrasi' && (
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Foto Poster</label>
+                        <div className="space-y-4">
+                          {editingLayananItem?.fotoUrl ? (
+                            <div className="relative w-full h-48">
+                              <img src={editingLayananItem.fotoUrl} alt="Preview" className="w-full h-full object-contain rounded-lg bg-gray-50" />
+                            </div>
+                          ) : (
+                            <div className="w-full h-48 bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400">
+                              Belum ada foto
+                            </div>
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            onChange={handleUploadLayananItemImage}
+                            disabled={uploading}
+                            className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700"
+                          />
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  <div className="flex gap-3 pt-4 border-t">
+                    <button onClick={handleSaveLayananItem} disabled={saving || uploading} className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                      {saving ? 'Menyimpan...' : 'Simpan Poster'}
+                    </button>
+                    <button onClick={() => { setIsLayananItemFormOpen(false); setEditingLayananItem(null); }} className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg">
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

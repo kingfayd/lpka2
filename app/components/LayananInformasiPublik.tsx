@@ -1,54 +1,137 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+
+interface LayananContent {
+  title: string;
+  deskripsi: string;
+}
+
+interface LayananItem {
+  id: string;
+  title: string;
+  deskripsi?: string;
+  fotoUrl: string;
+  type: string;
+  urutan: number;
+}
+
 export default function LayananInformasiPublik() {
+  const [content, setContent] = useState<LayananContent | null>(null);
+  const [items, setItems] = useState<LayananItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    try {
+      const [contentRes, itemsRes] = await Promise.all([
+        fetch('/api/content/layanan'),
+        fetch('/api/layanan'),
+      ]);
+
+      if (contentRes.ok) setContent(await contentRes.json());
+      if (itemsRes.ok) setItems(await itemsRes.json());
+    } catch (error) {
+      console.error('Error fetching layanan data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
     return (
-      <section className="font-sans text-gray-900 antialiased bg-white">
-        <div className="container px-5 pt-24 pb-12 mx-auto">
-          {/* HEADER */}
-          <div className="flex flex-col text-center w-full mb-10">
-            <h1 className="text-center mb-2 text-2xl font-medium title-font">
-              <span className="text-yellow-500 font-bold">Informasi </span> Publik
-            </h1>
-            <div className="w-12 mx-auto border-b-2 border-slate-300 mb-4"></div>
-            <p className="mx-auto leading-relaxed text-base max-w-3xl">
-              Berdasarkan UU 14 Tahun 2008 bahwa Informasi Publik adalah informasi
-              yang dihasilkan, disimpan, dikelola, dikirim, dan/atau diterima oleh
-              suatu badan publik yang berkaitan dengan penyelenggara dan
-              penyelenggaraan negara dan/atau penyelenggara dan penyelenggaraan
-              badan publik lainnya yang sesuai dengan Undang-Undang ini serta
-              informasi lain yang berkaitan dengan kepentingan publik.
-            </p>
-          </div>
-  
-          {/* LIST LAYANAN */}
-          <div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2">
-            {[
-              "Layanan Integrasi",
-              "Alur Kunjungan",
-              "Informasi DIPA",
-              "Informasi LAKIP",
-            ].map((item, index) => (
-              <div key={index} className="p-2 w-1/2 md:w-1/4">
-                <div className="bg-gray-200 rounded flex p-4 h-full items-center hover:bg-gray-300 transition">
-                  <svg
-                    fill="none"
-                    stroke="currentColor"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="3"
-                    className="text-gray-600 w-6 h-6 flex-shrink-0 mr-4"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
-                    <path d="M22 4L12 14.01l-3-3"></path>
-                  </svg>
-                  <span className="title-font font-medium text-gray-800">
-                    {item}
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
+      <section className="w-full bg-white pt-32 pb-16">
+        <div className="max-w-6xl mx-auto px-6">Loading...</div>
       </section>
     );
   }
-  
+
+  if (!content) {
+    return (
+      <section className="w-full bg-white pt-32 pb-16">
+        <div className="max-w-6xl mx-auto px-6">Data tidak ditemukan</div>
+      </section>
+    );
+  }
+
+  const integrasiItems = items.filter((item) => item.type === 'integrasi');
+  const kunjunganItems = items.filter((item) => item.type === 'kunjungan');
+
+  return (
+    <section className="w-full bg-white pt-32 pb-16">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* HEADER */}
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-6 font-sans">
+          {content.title}
+        </h1>
+        <p className="text-gray-600 leading-relaxed mb-16 text-lg max-w-4xl">
+          {content.deskripsi}
+        </p>
+
+        {/* LAYANAN INTEGRASI */}
+        <div id="integrasi" className="mb-20">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="h-8 w-1.5 bg-blue-600 rounded-full"></div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+              Layanan Integrasi
+            </h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {integrasiItems.length > 0 ? (
+              integrasiItems.map((item) => (
+                <div
+                  key={item.id}
+                  className="bg-white/95 backdrop-blur-sm border border-gray-100/50 p-6 rounded-3xl shadow-lg hover:scale-[1.02] transition-all duration-300 group"
+                >
+                  <div className="aspect-[3/4] bg-gray-100 rounded-2xl overflow-hidden mb-5">
+                    <img
+                      src={item.fotoUrl}
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                    />
+                  </div>
+                  <h3 className="text-xl font-bold text-gray-900 text-center">
+                    {item.title}
+                  </h3>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-500 italic">Belum ada informasi layanan integrasi.</p>
+            )}
+          </div>
+        </div>
+
+        {/* ALUR KUNJUNGAN */}
+        <div id="kunjungan">
+          <div className="flex items-center gap-4 mb-10">
+            <div className="h-8 w-1.5 bg-green-600 rounded-full"></div>
+            <h2 className="text-2xl md:text-3xl font-bold text-gray-800">
+              Alur Kunjungan
+            </h2>
+          </div>
+          <div className="bg-white/95 backdrop-blur-sm border border-gray-100/50 p-8 rounded-3xl shadow-md">
+            {kunjunganItems.length > 0 ? (
+              <ul className="space-y-4">
+                {kunjunganItems.map((item, index) => (
+                  <li key={item.id} className="flex items-start gap-4">
+                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center font-bold">
+                      {index + 1}
+                    </span>
+                    <p className="text-gray-700 text-lg leading-relaxed pt-0.5">
+                      {item.title}
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-gray-500 italic">Belum ada informasi alur kunjungan.</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}

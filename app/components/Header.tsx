@@ -18,7 +18,7 @@ export default function Header() {
   }
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-100 mx-6 mt-3 rounded-3xl">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-sm border border-gray-100/50 mx-6 mt-3 rounded-3xl shadow-md">
       <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
 
         {/* LOGO + TITLE */}
@@ -66,6 +66,9 @@ export default function Header() {
               </Link>
               <Link href="/profil#visi-misi" className="block px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors">
                 Visi & Misi
+              </Link>
+              <Link href="/profil#pejabat" className="block px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                Profil Pejabat
               </Link>
               <Link href="/profil#struktur" className="block px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-b-lg transition-colors">
                 Struktur Organisasi
@@ -141,6 +144,13 @@ export default function Header() {
                   onClick={() => { setOpen(false); setActiveDropdown(null); }}
                 >
                   Visi & Misi
+                </Link>
+                <Link
+                  href="/profil#pejabat"
+                  className="block px-6 py-2.5 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                  onClick={() => { setOpen(false); setActiveDropdown(null); }}
+                >
+                  Profil Pejabat
                 </Link>
                 <Link
                   href="/profil#struktur"

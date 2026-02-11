@@ -211,3 +211,71 @@ export async function updateSambutanContent(content: Partial<SambutanContent>): 
     throw error;
   }
 }
+
+export interface LayananContent {
+  id?: string;
+  title: string;
+  deskripsi: string;
+  updatedAt?: Date;
+}
+
+const DEFAULT_LAYANAN: LayananContent = {
+  title: 'Informasi Publik',
+  deskripsi: 'Berdasarkan UU 14 Tahun 2008 bahwa Informasi Publik adalah informasi yang dihasilkan, disimpan, dikelola, dikirim, dan/atau diterima oleh suatu badan publik yang berkaitan dengan penyelenggara dan penyelenggaraan negara dan/atau penyelenggara dan penyelenggaraan badan publik lainnya yang sesuai dengan Undang-Undang ini serta informasi lain yang berkaitan dengan kepentingan publik.',
+};
+
+export async function getLayananContent(): Promise<LayananContent> {
+  try {
+    let content = await prisma.layananContent.findFirst();
+
+    if (!content) {
+      content = await prisma.layananContent.create({
+        data: DEFAULT_LAYANAN
+      });
+    }
+
+    return {
+      id: content.id,
+      title: content.title,
+      deskripsi: content.deskripsi,
+      updatedAt: content.updatedAt
+    };
+  } catch (error) {
+    console.error('Error reading layanan content:', error);
+    return DEFAULT_LAYANAN;
+  }
+}
+
+export async function updateLayananContent(content: Partial<LayananContent>): Promise<LayananContent> {
+  try {
+    const existing = await prisma.layananContent.findFirst();
+
+    if (existing) {
+      const updated = await prisma.layananContent.update({
+        where: { id: existing.id },
+        data: content
+      });
+
+      return {
+        id: updated.id,
+        title: updated.title,
+        deskripsi: updated.deskripsi,
+        updatedAt: updated.updatedAt
+      };
+    } else {
+      const created = await prisma.layananContent.create({
+        data: content as Omit<LayananContent, 'id' | 'updatedAt'>
+      });
+
+      return {
+        id: created.id,
+        title: created.title,
+        deskripsi: created.deskripsi,
+        updatedAt: created.updatedAt
+      };
+    }
+  } catch (error) {
+    console.error('Error updating layanan content:', error);
+    throw error;
+  }
+}

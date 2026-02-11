@@ -37,3 +37,31 @@ model Article {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+model Pejabat {
+  id        String   @id @default(cuid())
+  nama      String
+  jabatan   String
+  fotoUrl   String?
+  urutan    Int      @default(0) // Untuk mengatur urutan tampilan
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model LayananContent {
+  id        String   @id @default(cuid())
+  title     String
+  deskripsi String
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model LayananItem {
+  id        String   @id @default(cuid())
+  title     String
+  deskripsi String?
+  fotoUrl   String
+  type      String   // 'integrasi' atau 'kunjungan'
+  urutan    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
