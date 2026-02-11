@@ -536,11 +536,11 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white shadow">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-800">Admin Dashboard</h1>
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex flex-col sm:flex-row justify-between items-center gap-4">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-800 text-center sm:text-left">Admin Dashboard</h1>
           <button
             onClick={handleLogout}
-            className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
+            className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 transition-colors"
           >
             Logout
           </button>
@@ -548,11 +548,11 @@ export default function AdminDashboard() {
       </div>
 
       {/* Tabs */}
-      <div className="bg-white border-b">
-        <div className="max-w-6xl mx-auto px-6 flex gap-6">
+      <div className="bg-white border-b sticky top-0 z-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 flex gap-2 sm:gap-6 overflow-x-auto no-scrollbar whitespace-nowrap">
           <button
             onClick={() => setActiveTab('profil')}
-            className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'profil'
+            className={`py-3 px-3 sm:px-4 font-medium border-b-2 transition ${activeTab === 'profil'
               ? 'border-blue-600 text-blue-600'
               : 'border-transparent text-gray-600 hover:text-gray-800'
               }`}
@@ -561,39 +561,39 @@ export default function AdminDashboard() {
           </button>
           <button
             onClick={() => setActiveTab('sambutan')}
-            className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'sambutan'
+            className={`py-3 px-3 sm:px-4 font-medium border-b-2 transition ${activeTab === 'sambutan'
               ? 'border-blue-600 text-blue-600'
               : 'border-transparent text-gray-600 hover:text-gray-800'
               }`}
           >
-            Sambutan & Foto Ketua
+            Sambutan
           </button>
           <button
             onClick={() => setActiveTab('artikel')}
-            className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'artikel'
+            className={`py-3 px-3 sm:px-4 font-medium border-b-2 transition ${activeTab === 'artikel'
               ? 'border-blue-600 text-blue-600'
               : 'border-transparent text-gray-600 hover:text-gray-800'
               }`}
           >
-            Artikel / Berita
+            Artikel
           </button>
           <button
             onClick={() => setActiveTab('pejabat')}
-            className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'pejabat'
+            className={`py-3 px-3 sm:px-4 font-medium border-b-2 transition ${activeTab === 'pejabat'
               ? 'border-blue-600 text-blue-600'
               : 'border-transparent text-gray-600 hover:text-gray-800'
               }`}
           >
-            Profil Pejabat
+            Pejabat
           </button>
           <button
             onClick={() => setActiveTab('layanan')}
-            className={`py-3 px-4 font-medium border-b-2 transition ${activeTab === 'layanan'
+            className={`py-3 px-3 sm:px-4 font-medium border-b-2 transition ${activeTab === 'layanan'
               ? 'border-blue-600 text-blue-600'
               : 'border-transparent text-gray-600 hover:text-gray-800'
               }`}
           >
-            Layanan Publik
+            Layanan
           </button>
         </div>
       </div>
@@ -607,7 +607,7 @@ export default function AdminDashboard() {
         )}
 
         {success && (
-          <div className="mb-4 p-4 bg-green-100 border border-green-400 text-green-700 rounded">
+          <div className="mb-4 p-3 sm:p-4 bg-green-100 border border-green-400 text-green-700 rounded text-sm sm:text-base">
             {success}
           </div>
         )}
@@ -843,17 +843,17 @@ export default function AdminDashboard() {
               />
             </div>
 
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={handleSaveSambutan}
                 disabled={saving}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium"
+                className="w-full sm:w-auto px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium transition-colors"
               >
                 {saving ? 'Menyimpan...' : 'Simpan Perubahan'}
               </button>
               <Link
                 href="/"
-                className="px-6 py-2 bg-gray-300 text-gray-800 rounded-lg hover:bg-gray-400 font-medium"
+                className="w-full sm:w-auto px-6 py-2.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium text-center transition-colors"
               >
                 Preview
               </Link>
@@ -866,14 +866,14 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             {!isArticleFormOpen ? (
               <>
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                   <h2 className="text-xl font-bold text-gray-800">Daftar Artikel</h2>
                   <button
                     onClick={() => {
                       setEditingArticle({});
                       setIsArticleFormOpen(true);
                     }}
-                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                    className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
                   >
                     + Tambah Artikel
                   </button>
@@ -1034,14 +1034,14 @@ export default function AdminDashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             {!isPejabatFormOpen ? (
               <>
-                <div className="flex justify-between items-center mb-6">
+                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                   <h2 className="text-xl font-bold text-gray-800">Daftar Pejabat</h2>
                   <button
                     onClick={() => {
                       setEditingPejabat({ urutan: pejabats.length });
                       setIsPejabatFormOpen(true);
                     }}
-                    className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                    className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
                   >
                     + Tambah Pejabat
                   </button>
@@ -1259,14 +1259,14 @@ export default function AdminDashboard() {
             <div className="bg-white rounded-lg shadow p-6">
               {!isLayananItemFormOpen ? (
                 <>
-                  <div className="flex justify-between items-center mb-6">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
                     <h2 className="text-xl font-bold text-gray-800">Poster Alur & Layanan</h2>
                     <button
                       onClick={() => {
                         setEditingLayananItem({ type: 'integrasi', urutan: layananItems.length });
                         setIsLayananItemFormOpen(true);
                       }}
-                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                      className="w-full sm:w-auto px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition-colors"
                     >
                       + Tambah Poster
                     </button>
