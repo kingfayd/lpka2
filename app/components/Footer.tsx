@@ -1,7 +1,18 @@
+"use client";
+
+import { usePathname } from "next/navigation";
+
 export default function Footer() {
+  const pathname = usePathname();
   const waNumber = "6281327413926";
   const waMessage =
     "Halo LPKA Kelas 1 Tangerang, saya ingin mendapatkan informasi lebih lanjut.";
+
+  // Don't show footer on the same pages as the header
+  const hideFooterPaths = ["/admin", "/login", "/register", "/auth", "/berita"];
+  if (hideFooterPaths.some(path => pathname?.startsWith(path))) {
+    return null;
+  }
 
   return (
     <footer className="w-full bg-black text-gray-200 relative">
