@@ -2,24 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { verifyToken } from '@/lib/auth';
 
-function getTokenFromRequest(request: NextRequest): string | null {
-    const authHeader = request.headers.get('authorization');
-    if (authHeader?.startsWith('Bearer ')) {
-        return authHeader.slice(7);
-    }
-    return request.cookies.get('adminToken')?.value || null;
-}
-
 export async function PUT(
     request: NextRequest,
     { params }: { params: Promise<{ id: string }> }
 ) {
     try {
         const { id } = await params;
-        const token = getTokenFromRequest(request);
-        if (!token || !verifyToken(token)) {
-            return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
-        }
 
         const body = await request.json();
         const item = await prisma.layananItem.update({
@@ -39,10 +27,6 @@ export async function DELETE(
 ) {
     try {
         const { id } = await params;
-        const token = getTokenFromRequest(request);
-        if (!token || !verifyToken(token)) {
-            return NextResponse.json({ error: 'Tidak terautentikasi' }, { status: 401 });
-        }
 
         await prisma.layananItem.delete({
             where: { id },

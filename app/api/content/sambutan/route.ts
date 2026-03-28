@@ -4,16 +4,6 @@ import { verifyToken } from '@/lib/auth';
 
 export const dynamic = 'force-dynamic';
 
-function getTokenFromRequest(request: NextRequest): string | null {
-  const authHeader = request.headers.get('authorization');
-  if (authHeader?.startsWith('Bearer ')) {
-    return authHeader.slice(7);
-  }
-
-  const cookieToken = request.cookies.get('adminToken')?.value;
-  return cookieToken || null;
-}
-
 // GET sambutan content
 export async function GET(request: NextRequest) {
   try {
@@ -40,17 +30,7 @@ export async function GET(request: NextRequest) {
 // PUT update sambutan content (admin only)
 export async function PUT(request: NextRequest) {
   try {
-    // Verify admin token
-    const token = getTokenFromRequest(request);
-    console.log('[API] PUT request - Token:', token ? 'present' : 'missing');
-    
-    if (!token || !verifyToken(token)) {
-      console.log('[API] PUT request - Auth failed');
-      return NextResponse.json(
-        { error: 'Tidak terautentikasi' },
-        { status: 401 }
-      );
-    }
+    // Authentication handled by middleware
 
     const body = await request.json();
     console.log('[API] PUT request - Body:', body);

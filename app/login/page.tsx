@@ -1,10 +1,12 @@
 'use client';
 
 import { useState } from 'react';
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
-export default function AdminLoginPage() {
-  const [username, setUsername] = useState('');
+export default function LoginPage() {
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -16,21 +18,18 @@ export default function AdminLoginPage() {
     setLoading(true);
 
     try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password }),
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
       });
 
-      if (!response.ok) {
-        const data = await response.json();
-        setError(data.error || 'Login gagal');
+      if (error) {
+        setError(error.message);
         return;
       }
 
-      const data = await response.json();
-      localStorage.setItem('adminToken', data.token);
       router.push('/admin/dashboard');
+      router.refresh();
     } catch (err) {
       setError('Terjadi kesalahan. Silakan coba lagi.');
     } finally {
@@ -42,21 +41,22 @@ export default function AdminLoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-gray-900">
       <div className="w-full max-w-md bg-white rounded-lg shadow-lg p-8">
         <h1 className="text-2xl font-bold text-gray-800 mb-6 text-center">
-          Admin Login
+          Login Admin
         </h1>
 
         <form onSubmit={handleLogin} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
-              Username
+              Email
             </label>
             <input
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Masukkan username"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Masukkan email"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               disabled={loading}
+              required
             />
           </div>
 
@@ -71,11 +71,12 @@ export default function AdminLoginPage() {
               placeholder="Masukkan password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               disabled={loading}
+              required
             />
           </div>
 
           {error && (
-            <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+            <div className="p-3 bg-red-100 border border-red-400 text-red-700 rounded text-sm">
               {error}
             </div>
           )}
@@ -88,7 +89,13 @@ export default function AdminLoginPage() {
             {loading ? 'Memproses...' : 'Login'}
           </button>
         </form>
-
+        
+        <p className="text-center text-sm text-gray-500 mt-4">
+          Belum punya akun?{' '}
+          <Link href="/register" className="text-blue-600 font-medium hover:underline">
+            Daftar
+          </Link>
+        </p>
       </div>
     </div>
   );

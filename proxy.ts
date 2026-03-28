@@ -1,20 +1,54 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextResponse, type NextRequest } from 'next/server'
+import { createServerClient } from '@supabase/ssr'
 
-export function proxy(request: NextRequest) {
-  // Protect admin routes
-  if (request.nextUrl.pathname.startsWith('/admin/dashboard')) {
-    const token = request.cookies.get('adminToken')?.value;
+export async function proxy(request: NextRequest) {
+    let response = NextResponse.next({
+        request: {
+            headers: request.headers,
+        },
+    })
 
-    if (!token) {
-      return NextResponse.redirect(
-        new URL('/admin/login', request.url)
-      );
+    const supabase = createServerClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL || '',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '',
+        {
+            cookies: {
+                get(name: string) {
+                    return request.cookies.get(name)?.value
+                },
+                set(name: string, value: string, options: any) {
+                    request.cookies.set({ name, value, ...options })
+                    response = NextResponse.next({
+                        request: { headers: request.headers },
+                    })
+                    response.cookies.set({ name, value, ...options })
+                },
+                remove(name: string, options: any) {
+                    request.cookies.set({ name, value: '', ...options })
+                    response = NextResponse.next({
+                        request: { headers: request.headers },
+                    })
+                    response.cookies.set({ name, value: '', ...options })
+                },
+            },
+        }
+    )
+
+    const { data: { user } } = await supabase.auth.getUser()
+
+    const isProtectedUrl = request.nextUrl.pathname.startsWith('/admin')
+    const isProtectedApi = request.nextUrl.pathname.startsWith('/api') && request.method !== 'GET'
+
+    if (!user && (isProtectedUrl || isProtectedApi)) {
+        if (isProtectedApi) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+        }
+        return NextResponse.redirect(new URL('/login', request.url))
     }
-  }
 
-  return NextResponse.next();
+    return response
 }
 
 export const config = {
-  matcher: ['/admin/:path*'],
-};
+    matcher: ['/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)'],
+}

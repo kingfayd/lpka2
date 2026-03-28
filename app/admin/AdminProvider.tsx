@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { supabase } from '@/lib/supabase';
 
 interface AdminProviderProps {
   children: React.ReactNode;
@@ -13,13 +13,25 @@ export function AdminProvider({ children }: AdminProviderProps) {
   const router = useRouter();
 
   useEffect(() => {
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-      setIsAuthenticated(false);
-      router.push('/admin/login');
-    } else {
-      setIsAuthenticated(true);
-    }
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) {
+        setIsAuthenticated(false);
+        router.push('/login');
+      } else {
+        setIsAuthenticated(true);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (!session) {
+        setIsAuthenticated(false);
+        router.push('/login');
+      } else {
+        setIsAuthenticated(true);
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, [router]);
 
   if (isAuthenticated === null) {
@@ -30,13 +42,7 @@ export function AdminProvider({ children }: AdminProviderProps) {
     );
   }
 
-  if (!isAuthenticated) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <p>Redirecting to login...</p>
-      </div>
-    );
-  }
+  if (!isAuthenticated) return null;
 
   return <>{children}</>;
 }

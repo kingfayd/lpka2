@@ -519,9 +519,9 @@ export default function AdminDashboard() {
   };
 
   const handleLogout = async () => {
-    await fetch('/api/auth/logout', { method: 'POST' });
-    localStorage.removeItem('adminToken');
-    router.push('/admin/login');
+    const { supabase } = await import('@/lib/supabase');
+    await supabase.auth.signOut();
+    router.push('/login');
   };
 
   if (loading) {
@@ -1062,7 +1062,7 @@ export default function AdminDashboard() {
                             )}
                           </div>
                           <div>
-                            <h3 className="font-bold text-base">{pejabat.nama}</h3>
+                            <h3 className="font-bold text-base text-gray-900">{pejabat.nama}</h3>
                             <p className="text-sm text-gray-500">{pejabat.jabatan}</p>
                             <p className="text-xs text-gray-400">Urutan: {pejabat.urutan}</p>
                           </div>

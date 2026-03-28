@@ -5,16 +5,6 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getProfilContent, updateProfilContent } from '@/lib/content'
 import { verifyToken } from '@/lib/auth'
 
-function getTokenFromRequest(request: NextRequest): string | null {
-  const authHeader = request.headers.get('authorization')
-  if (authHeader?.startsWith('Bearer ')) {
-    return authHeader.slice(7)
-  }
-
-  const cookieToken = request.cookies.get('adminToken')?.value
-  return cookieToken || null
-}
-
 // =====================
 // GET profil content
 // =====================
@@ -47,14 +37,7 @@ export async function GET() {
 // =====================
 export async function PUT(request: NextRequest) {
   try {
-    const token = getTokenFromRequest(request)
-
-    if (!token || !verifyToken(token)) {
-      return NextResponse.json(
-        { error: 'Tidak terautentikasi' },
-        { status: 401 }
-      )
-    }
+    // Authentication handled by middleware
 
     const body = await request.json()
     const { title, deskripsi, visi, misi, tugasFungsi } = body
