@@ -51,20 +51,46 @@ interface LayananItem {
   urutan: number;
 }
 
+interface KegiatanContent {
+  kategori: string;
+  title: string;
+  deskripsi: string;
+}
+
+interface KegiatanItem {
+  id: string;
+  kategori: string;
+  title: string;
+  deskripsi?: string;
+  imageUrl: string;
+  urutan: number;
+}
+
+type KategoriKegiatan = 'perikanan' | 'pertanian' | 'pendidikan' | 'keagamaan';
+
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'profil' | 'sambutan' | 'artikel' | 'pejabat' | 'layanan'>('profil');
+  const [activeTab, setActiveTab] = useState<'profil' | 'sambutan' | 'artikel' | 'pejabat' | 'layanan' | 'kegiatan'>('profil');
+  const [activeKategori, setActiveKategori] = useState<KategoriKegiatan>('perikanan');
+  
   const [profilContent, setProfilContent] = useState<ProfilContent | null>(null);
   const [sambutanContent, setSambutanContent] = useState<SambutanContent | null>(null);
   const [articles, setArticles] = useState<Article[]>([]);
   const [pejabats, setPejabats] = useState<Pejabat[]>([]);
   const [layananContent, setLayananContent] = useState<LayananContent | null>(null);
   const [layananItems, setLayananItems] = useState<LayananItem[]>([]);
+  const [kegiatanContent, setKegiatanContent] = useState<KegiatanContent | null>(null);
+  const [kegiatanItems, setKegiatanItems] = useState<KegiatanItem[]>([]);
+
   const [editingArticle, setEditingArticle] = useState<Partial<Article> | null>(null);
   const [editingPejabat, setEditingPejabat] = useState<Partial<Pejabat> | null>(null);
   const [editingLayananItem, setEditingLayananItem] = useState<Partial<LayananItem> | null>(null);
+  const [editingKegiatanItem, setEditingKegiatanItem] = useState<Partial<KegiatanItem> | null>(null);
+
   const [isArticleFormOpen, setIsArticleFormOpen] = useState(false);
   const [isPejabatFormOpen, setIsPejabatFormOpen] = useState(false);
   const [isLayananItemFormOpen, setIsLayananItemFormOpen] = useState(false);
+  const [isKegiatanItemFormOpen, setIsKegiatanItemFormOpen] = useState(false);
+  
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -116,9 +142,32 @@ export default function AdminDashboard() {
       if (layananItemsRes.ok) {
         setLayananItems(await layananItemsRes.json());
       }
-
     } catch (err) {
       setError('Gagal mengambil data');
+    } finally {
+      if (activeTab !== 'kegiatan') {
+        setLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (activeTab === 'kegiatan') {
+      fetchKegiatan();
+    }
+  }, [activeTab, activeKategori]);
+
+  const fetchKegiatan = async () => {
+    setLoading(true);
+    try {
+      const [contentRes, itemsRes] = await Promise.all([
+        fetch(`/api/content/kegiatan/${activeKategori}`),
+        fetch(`/api/kegiatan?kategori=${activeKategori}`)
+      ]);
+      if (contentRes.ok) setKegiatanContent(await contentRes.json());
+      if (itemsRes.ok) setKegiatanItems(await itemsRes.json());
+    } catch (error) {
+      setError('Gagal mengambil data kegiatan');
     } finally {
       setLoading(false);
     }
@@ -518,6 +567,109 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleSaveKegiatanContent = async () => {
+    if (!kegiatanContent) return;
+    setSaving(true);
+    setError('');
+    setSuccess('');
+    try {
+      const response = await fetch(`/api/content/kegiatan/${activeKategori}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(kegiatanContent),
+      });
+      if (!response.ok) throw new Error('Gagal menyimpan konten kegiatan');
+      setSuccess('Konten kegiatan berhasil diupdate!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleSaveKegiatanItem = async () => {
+    if (!editingKegiatanItem || !editingKegiatanItem.title) {
+      setError('Judul wajib diisi');
+      return;
+    }
+
+    if (!editingKegiatanItem.imageUrl) {
+      setError('Foto wajib diisi untuk kegiatan');
+      return;
+    }
+
+    setSaving(true);
+    setError('');
+    setSuccess('');
+
+    try {
+      const isEditing = !!editingKegiatanItem.id;
+      const url = isEditing
+        ? `/api/kegiatan/${editingKegiatanItem.id}`
+        : '/api/kegiatan';
+
+      const method = isEditing ? 'PUT' : 'POST';
+
+      const payload = isEditing 
+        ? editingKegiatanItem 
+        : { ...editingKegiatanItem, kategori: activeKategori };
+
+      const response = await fetch(url, {
+        method,
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) throw new Error('Gagal menyimpan item kegiatan');
+
+      setSuccess('Item kegiatan berhasil disimpan!');
+      setTimeout(() => setSuccess(''), 3000);
+
+      const res = await fetch(`/api/kegiatan?kategori=${activeKategori}`);
+      if (res.ok) setKegiatanItems(await res.json());
+
+      setIsKegiatanItemFormOpen(false);
+      setEditingKegiatanItem(null);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteKegiatanItem = async (id: string) => {
+    if (!confirm('Apakah Anda yakin ingin menghapus item kegiatan ini?')) return;
+    try {
+      const response = await fetch(`/api/kegiatan/${id}`, { method: 'DELETE' });
+      if (!response.ok) throw new Error('Gagal menghapus kegiatan');
+      setSuccess('Item berhasil dihapus!');
+      setTimeout(() => setSuccess(''), 3000);
+      setKegiatanItems(kegiatanItems.filter(i => i.id !== id));
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Gagal menghapus');
+    }
+  };
+
+  const handleUploadKegiatanItemImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setError('');
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const response = await fetch('/api/upload', { method: 'POST', body: formData });
+      if (!response.ok) throw new Error('Upload gagal');
+      const data = await response.json();
+      setEditingKegiatanItem(prev => ({ ...prev, imageUrl: data.url }));
+    } catch (err) {
+      setError('Gagal upload gambar');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleLogout = async () => {
     const { supabase } = await import('@/lib/supabase');
     await supabase.auth.signOut();
@@ -594,6 +746,15 @@ export default function AdminDashboard() {
               }`}
           >
             Layanan
+          </button>
+          <button
+            onClick={() => setActiveTab('kegiatan')}
+            className={`py-3 px-3 sm:px-4 font-medium border-b-2 transition ${activeTab === 'kegiatan'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+          >
+            Kegiatan
           </button>
         </div>
       </div>
@@ -1377,6 +1538,180 @@ export default function AdminDashboard() {
                       {saving ? 'Menyimpan...' : 'Simpan Poster'}
                     </button>
                     <button onClick={() => { setIsLayananItemFormOpen(false); setEditingLayananItem(null); }} className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg">
+                      Batal
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {/* KEGIATAN TAB */}
+        {activeTab === 'kegiatan' && (
+          <div className="space-y-6">
+            <div className="bg-white rounded-lg shadow p-6">
+              <div className="flex gap-4 mb-6 border-b pb-4 overflow-x-auto no-scrollbar whitespace-nowrap">
+                {(['perikanan', 'pertanian', 'pendidikan', 'keagamaan'] as KategoriKegiatan[]).map((kat) => (
+                  <button
+                    key={kat}
+                    onClick={() => setActiveKategori(kat)}
+                    className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeKategori === kat
+                      ? 'bg-blue-600 text-white'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    }`}
+                  >
+                    {kat.charAt(0).toUpperCase() + kat.slice(1)}
+                  </button>
+                ))}
+              </div>
+
+              {kegiatanContent && (
+                <div className="space-y-6">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Judul Halaman</label>
+                    <input
+                      type="text"
+                      value={kegiatanContent.title}
+                      onChange={(e) => setKegiatanContent({ ...kegiatanContent, title: e.target.value })}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Halaman</label>
+                    <textarea
+                      value={kegiatanContent.deskripsi}
+                      onChange={(e) => setKegiatanContent({ ...kegiatanContent, deskripsi: e.target.value })}
+                      rows={4}
+                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-gray-900"
+                    />
+                  </div>
+                  <div className="flex gap-3">
+                    <button
+                      onClick={handleSaveKegiatanContent}
+                      disabled={saving}
+                      className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                    >
+                      {saving ? 'Menyimpan...' : 'Simpan Konten Header'}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="bg-white rounded-lg shadow p-6">
+              {!isKegiatanItemFormOpen ? (
+                <>
+                  <div className="flex justify-between items-center mb-6">
+                    <h2 className="text-xl font-bold text-gray-800">Galeri {activeKategori}</h2>
+                    <button
+                      onClick={() => {
+                        setEditingKegiatanItem({ kategori: activeKategori, urutan: kegiatanItems.length });
+                        setIsKegiatanItemFormOpen(true);
+                      }}
+                      className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
+                    >
+                      + Tambah Foto
+                    </button>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {kegiatanItems.length === 0 ? (
+                      <p className="text-gray-500 col-span-full py-4 text-center border-2 border-dashed rounded-xl">Belum ada foto.</p>
+                    ) : (
+                      kegiatanItems.map((item) => (
+                        <div key={item.id} className="border p-4 rounded-lg flex flex-col gap-3">
+                          <div className="aspect-video bg-gray-100 rounded overflow-hidden">
+                            <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
+                          </div>
+                          <div>
+                            <h4 className="font-bold">{item.title}</h4>
+                            {item.deskripsi && <p className="text-sm text-gray-600 line-clamp-2">{item.deskripsi}</p>}
+                          </div>
+                          <div className="flex gap-2 mt-auto pt-2 border-t">
+                            <button
+                              onClick={() => {
+                                setEditingKegiatanItem(item);
+                                setIsKegiatanItemFormOpen(true);
+                              }}
+                              className="flex-1 px-3 py-1 bg-yellow-500 text-white rounded text-sm hover:bg-yellow-600"
+                            >
+                              Edit
+                            </button>
+                            <button
+                              onClick={() => handleDeleteKegiatanItem(item.id)}
+                              className="flex-1 px-3 py-1 bg-red-500 text-white rounded text-sm hover:bg-red-600"
+                            >
+                              Hapus
+                            </button>
+                          </div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </>
+              ) : (
+                <div className="space-y-6">
+                  <h2 className="text-xl font-bold text-gray-800 border-b pb-4">
+                    {editingKegiatanItem?.id ? 'Edit Foto' : 'Tambah Foto Baru'}
+                  </h2>
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Judul Foto</label>
+                        <input
+                          type="text"
+                          value={editingKegiatanItem?.title || ''}
+                          onChange={(e) => setEditingKegiatanItem(prev => ({ ...prev, title: e.target.value }))}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Keterangan (Opsional)</label>
+                        <textarea
+                          value={editingKegiatanItem?.deskripsi || ''}
+                          onChange={(e) => setEditingKegiatanItem(prev => ({ ...prev, deskripsi: e.target.value }))}
+                          rows={3}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Urutan Tampil</label>
+                        <input
+                          type="number"
+                          value={editingKegiatanItem?.urutan || 0}
+                          onChange={(e) => setEditingKegiatanItem(prev => ({ ...prev, urutan: parseInt(e.target.value) || 0 }))}
+                          className="w-full px-4 py-2 border border-gray-300 rounded-lg text-gray-900"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Foto / Gambar</label>
+                      <div className="space-y-4">
+                        {editingKegiatanItem?.imageUrl ? (
+                          <div className="relative w-full aspect-video">
+                            <img src={editingKegiatanItem.imageUrl} alt="Preview" className="w-full h-full object-contain rounded-lg bg-gray-50" />
+                          </div>
+                        ) : (
+                          <div className="w-full aspect-video bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400">
+                            Belum ada foto
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleUploadKegiatanItemImage}
+                          disabled={uploading}
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex gap-3 pt-4 border-t">
+                    <button onClick={handleSaveKegiatanItem} disabled={saving || uploading} className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                      {saving ? 'Menyimpan...' : 'Simpan Foto'}
+                    </button>
+                    <button onClick={() => { setIsKegiatanItemFormOpen(false); setEditingKegiatanItem(null); }} className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg">
                       Batal
                     </button>
                   </div>

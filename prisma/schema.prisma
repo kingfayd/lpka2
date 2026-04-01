@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model ProfilContent {
@@ -61,6 +62,25 @@ model LayananItem {
   deskripsi String?
   fotoUrl   String
   type      String   // 'integrasi' atau 'kunjungan'
+  urutan    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model KegiatanContent {
+  id        String   @id @default(cuid())
+  kategori  String   @unique  // perikanan | pertanian | pendidikan | keagamaan
+  title     String
+  deskripsi String
+  updatedAt DateTime @default(now()) @updatedAt
+}
+
+model KegiatanItem {
+  id        String   @id @default(cuid())
+  kategori  String   // perikanan | pertanian | pendidikan | keagamaan
+  title     String
+  deskripsi String?
+  imageUrl  String
   urutan    Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

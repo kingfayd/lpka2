@@ -279,3 +279,123 @@ export async function updateLayananContent(content: Partial<LayananContent>): Pr
     throw error;
   }
 }
+
+// =====================
+// KEGIATAN CONTENT
+// =====================
+
+export type KategoriKegiatan = 'perikanan' | 'pertanian' | 'pendidikan' | 'keagamaan';
+
+export interface KegiatanContent {
+  id?: string;
+  kategori: KategoriKegiatan;
+  title: string;
+  deskripsi: string;
+  updatedAt?: Date;
+}
+
+export interface KegiatanItem {
+  id?: string;
+  kategori: KategoriKegiatan;
+  title: string;
+  deskripsi?: string;
+  imageUrl: string;
+  urutan: number;
+  createdAt?: Date;
+  updatedAt?: Date;
+}
+
+const DEFAULT_KEGIATAN: Record<KategoriKegiatan, Omit<KegiatanContent, 'id' | 'updatedAt'>> = {
+  perikanan: {
+    kategori: 'perikanan',
+    title: 'Kegiatan Perikanan',
+    deskripsi:
+      'Program perikanan di LPKA Kelas I Tangerang memberikan bekal keterampilan budidaya ikan kepada anak binaan sebagai bekal kemandirian setelah bebas.',
+  },
+  pertanian: {
+    kategori: 'pertanian',
+    title: 'Kegiatan Pertanian',
+    deskripsi:
+      'Program pertanian di LPKA Kelas I Tangerang melatih anak binaan dalam bercocok tanam dan berkebun sebagai salah satu bentuk pembinaan kemandirian.',
+  },
+  pendidikan: {
+    kategori: 'pendidikan',
+    title: 'Kegiatan Pendidikan',
+    deskripsi:
+      'Program pendidikan di LPKA Kelas I Tangerang memastikan setiap anak binaan tetap mendapatkan hak pendidikannya secara formal maupun non-formal.',
+  },
+  keagamaan: {
+    kategori: 'keagamaan',
+    title: 'Kegiatan Keagamaan',
+    deskripsi:
+      'Program keagamaan di LPKA Kelas I Tangerang membina mental dan spiritual anak melalui pengajian, ibadah bersama, dan kegiatan rohani lainnya.',
+  },
+};
+
+export async function getKegiatanContent(kategori: KategoriKegiatan): Promise<KegiatanContent> {
+  try {
+    let content = await prisma.kegiatanContent.findUnique({ where: { kategori } });
+
+    if (!content) {
+      content = await prisma.kegiatanContent.create({ data: DEFAULT_KEGIATAN[kategori] });
+    }
+
+    return {
+      id: content.id,
+      kategori: content.kategori as KategoriKegiatan,
+      title: content.title,
+      deskripsi: content.deskripsi,
+      updatedAt: content.updatedAt,
+    };
+  } catch (error) {
+    console.error(`Error reading kegiatan content (${kategori}):`, error);
+    return DEFAULT_KEGIATAN[kategori];
+  }
+}
+
+export async function updateKegiatanContent(
+  kategori: KategoriKegiatan,
+  data: Partial<KegiatanContent>
+): Promise<KegiatanContent> {
+  try {
+    const updated = await prisma.kegiatanContent.upsert({
+      where: { kategori },
+      update: { title: data.title, deskripsi: data.deskripsi },
+      create: { kategori, title: data.title ?? DEFAULT_KEGIATAN[kategori].title, deskripsi: data.deskripsi ?? DEFAULT_KEGIATAN[kategori].deskripsi },
+    });
+
+    return {
+      id: updated.id,
+      kategori: updated.kategori as KategoriKegiatan,
+      title: updated.title,
+      deskripsi: updated.deskripsi,
+      updatedAt: updated.updatedAt,
+    };
+  } catch (error) {
+    console.error(`Error updating kegiatan content (${kategori}):`, error);
+    throw error;
+  }
+}
+
+export async function getKegiatanItems(kategori: KategoriKegiatan): Promise<KegiatanItem[]> {
+  try {
+    const items = await prisma.kegiatanItem.findMany({
+      where: { kategori },
+      orderBy: [{ urutan: 'asc' }, { createdAt: 'desc' }],
+    });
+    return items.map((item) => ({
+      id: item.id,
+      kategori: item.kategori as KategoriKegiatan,
+      title: item.title,
+      deskripsi: item.deskripsi ?? undefined,
+      imageUrl: item.imageUrl,
+      urutan: item.urutan,
+      createdAt: item.createdAt,
+      updatedAt: item.updatedAt,
+    }));
+  } catch (error) {
+    console.error(`Error fetching kegiatan items (${kategori}):`, error);
+    return [];
+  }
+}
+

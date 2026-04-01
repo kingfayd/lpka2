@@ -85,13 +85,30 @@ export default function Header() {
             <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 group-hover:w-full transition-all duration-300" />
           </Link>
 
-          <Link
-            href="/kontak"
-            className="text-sm text-gray-700 font-medium hover:text-gray-900 transition-colors relative group"
+          <div
+            className="relative group"
+            onMouseEnter={() => setActiveDropdown("kegiatan")}
+            onMouseLeave={() => setActiveDropdown(null)}
           >
-            Kontak
-            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 group-hover:w-full transition-all duration-300" />
-          </Link>
+            <button className="text-sm text-gray-700 font-medium hover:text-gray-900 transition-colors flex items-center gap-1.5">
+              Kegiatan
+              <ChevronDown size={16} className="group-hover:rotate-180 transition-transform duration-300" />
+            </button>
+            <div className="absolute left-0 mt-0 w-48 bg-white border border-gray-100 rounded-lg shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 translate-y-1 group-hover:translate-y-0">
+              <Link href="/kegiatan/perikanan" className="block px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-t-lg transition-colors">
+                Perikanan
+              </Link>
+              <Link href="/kegiatan/pertanian" className="block px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                Pertanian
+              </Link>
+              <Link href="/kegiatan/pendidikan" className="block px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-colors">
+                Pendidikan
+              </Link>
+              <Link href="/kegiatan/keagamaan" className="block px-4 py-3 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-50 rounded-b-lg transition-colors">
+                Keagamaan
+              </Link>
+            </div>
+          </div>
         </nav>
 
         {/* MOBILE BUTTON */}
@@ -171,13 +188,48 @@ export default function Header() {
               Layanan Publik
             </Link>
 
-            <Link
-              href="/kontak"
-              className="px-4 py-2.5 text-sm text-gray-700 font-medium hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
-              onClick={() => setOpen(false)}
+            <button
+              onClick={() => setActiveDropdown(activeDropdown === "kegiatan" ? null : "kegiatan")}
+              className="px-4 py-2.5 text-sm text-gray-700 font-medium hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors flex items-center justify-between w-full"
             >
-              Kontak
-            </Link>
+              Kegiatan
+              <ChevronDown
+                size={16}
+                className={`transition-transform duration-300 ${activeDropdown === "kegiatan" ? "rotate-180" : ""}`}
+              />
+            </button>
+            {activeDropdown === "kegiatan" && (
+              <div className="bg-gray-50 rounded-lg">
+                <Link
+                  href="/kegiatan/perikanan"
+                  className="block px-6 py-2.5 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                  onClick={() => { setOpen(false); setActiveDropdown(null); }}
+                >
+                  Perikanan
+                </Link>
+                <Link
+                  href="/kegiatan/pertanian"
+                  className="block px-6 py-2.5 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                  onClick={() => { setOpen(false); setActiveDropdown(null); }}
+                >
+                  Pertanian
+                </Link>
+                <Link
+                  href="/kegiatan/pendidikan"
+                  className="block px-6 py-2.5 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 transition-colors"
+                  onClick={() => { setOpen(false); setActiveDropdown(null); }}
+                >
+                  Pendidikan
+                </Link>
+                <Link
+                  href="/kegiatan/keagamaan"
+                  className="block px-6 py-2.5 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
+                  onClick={() => { setOpen(false); setActiveDropdown(null); }}
+                >
+                  Keagamaan
+                </Link>
+              </div>
+            )}
           </nav>
         </div>
       )}
