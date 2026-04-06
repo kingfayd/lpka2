@@ -9,7 +9,6 @@ export default function Providers({
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    // Pastikan hanya berjalan di client side
     if (typeof window !== "undefined") {
       AOS.init({
         duration: 1000,

@@ -7,7 +7,6 @@ export default function AdminPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Auto redirect ke login
     router.push('/admin/login');
   }, [router]);
 

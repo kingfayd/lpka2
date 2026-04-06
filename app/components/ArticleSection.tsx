@@ -44,11 +44,11 @@ export default function ArticleSection() {
     }
 
     if (articles.length === 0) {
-        return null; // Don't show section if no articles
+        return null;
     }
 
     const latestArticle = articles[0];
-    const otherArticles = articles.slice(1, 4); // Show next 3 articles
+    const otherArticles = articles.slice(1, 4);
 
     return (
         <section className="py-20 bg-gray-50 overflow-hidden">

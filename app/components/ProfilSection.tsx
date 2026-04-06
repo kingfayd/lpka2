@@ -26,7 +26,6 @@ export default function ProfilSection() {
   useEffect(() => {
     fetchContent();
 
-    // Refresh data setiap 2 detik untuk real-time updates
     const interval = setInterval(() => {
       fetchContent();
     }, 2000);
@@ -36,7 +35,6 @@ export default function ProfilSection() {
 
   const fetchContent = async () => {
     try {
-      // Force no-cache dengan timestamp dan cache-busting
       const url = new URL('/api/content/profil', window.location.origin);
       url.searchParams.set('_t', Date.now().toString());
 
@@ -52,7 +50,6 @@ export default function ProfilSection() {
         setContent(data);
       }
 
-      // Fetch Pejabat
       const pejabatRes = await fetch('/api/pejabat');
       if (pejabatRes.ok) {
         setPejabats(await pejabatRes.json());

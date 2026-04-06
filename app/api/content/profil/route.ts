@@ -5,16 +5,12 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getProfilContent, updateProfilContent } from '@/lib/content'
 import { verifyToken } from '@/lib/auth'
 
-// =====================
-// GET profil content
-// =====================
 export async function GET() {
   try {
     const content = await getProfilContent()
 
     const response = NextResponse.json(content, { status: 200 })
 
-    // Disable caching completely (important for dynamic API)
     response.headers.set(
       'Cache-Control',
       'no-store, no-cache, must-revalidate, proxy-revalidate'
@@ -32,12 +28,8 @@ export async function GET() {
   }
 }
 
-// =====================
-// PUT update profil (admin only)
-// =====================
 export async function PUT(request: NextRequest) {
   try {
-    // Authentication handled by middleware
 
     const body = await request.json()
     const { title, deskripsi, visi, misi, tugasFungsi } = body

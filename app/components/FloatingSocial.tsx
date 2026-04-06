@@ -5,19 +5,19 @@ import Link from "next/link";
 const socialLinks = [
   {
     name: "Instagram",
-    href: "https://instagram.com/lpka_tangerang", // Sesuaikan dengan URL yang benar
+    href: "https://instagram.com/lpka_tangerang",
     icon: <Instagram size={20} />,
     colorClass: "bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 hover:opacity-90 text-white",
   },
   {
     name: "Facebook",
-    href: "https://facebook.com/lpka", // Sesuaikan dengan URL yang benar
+    href: "https://facebook.com/lpka",
     icon: <Facebook size={20} />,
     colorClass: "bg-[#1877F2] hover:bg-[#166fe5] text-white",
   },
   {
     name: "TikTok",
-    href: "https://tiktok.com/@lpka_tangerang", // Sesuaikan dengan URL yang benar
+    href: "https://tiktok.com/@lpka_tangerang",
     icon: (
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -37,7 +37,7 @@ const socialLinks = [
   },
   {
     name: "Twitter",
-    href: "https://twitter.com/lpka", // Sesuaikan dengan URL yang benar
+    href: "https://twitter.com/lpka",
     icon: <Twitter size={20} />,
     colorClass: "bg-sky-500 hover:bg-sky-600 text-white",
   },

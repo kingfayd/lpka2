@@ -119,8 +119,7 @@ export default function AdminDashboard() {
         setSambutanContent(await sambutanRes.json());
       }
 
-      if (profilRes.ok && sambutanRes.ok) { // Simplified check for now
-        // Articles might be empty, that's fine
+      if (profilRes.ok && sambutanRes.ok) {
       }
 
       const articlesRes = await fetch('/api/articles');
@@ -316,7 +315,6 @@ export default function AdminDashboard() {
       setSuccess('Artikel berhasil disimpan!');
       setTimeout(() => setSuccess(''), 3000);
 
-      // Refresh articles
       const articlesRes = await fetch('/api/articles');
       if (articlesRes.ok) {
         setArticles(await articlesRes.json());
@@ -344,7 +342,6 @@ export default function AdminDashboard() {
       setSuccess('Artikel berhasil dihapus!');
       setTimeout(() => setSuccess(''), 3000);
 
-      // Refresh articles
       setArticles(articles.filter(a => a.id !== id));
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Gagal menghapus');
@@ -408,7 +405,6 @@ export default function AdminDashboard() {
       setSuccess('Data pejabat berhasil disimpan!');
       setTimeout(() => setSuccess(''), 3000);
 
-      // Refresh data
       const res = await fetch('/api/pejabat');
       if (res.ok) {
         setPejabats(await res.json());

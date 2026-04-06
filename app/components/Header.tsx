@@ -12,7 +12,6 @@ export default function Header() {
   const [open, setOpen] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
-  // Don't show header on admin, auth, or article detail pages
   const hideHeaderPaths = ["/admin", "/login", "/register", "/auth", "/berita"];
   if (hideHeaderPaths.some(path => pathname?.startsWith(path))) {
     return null;

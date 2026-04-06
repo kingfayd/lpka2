@@ -42,7 +42,6 @@ export async function getProfilContent(): Promise<ProfilContent> {
     let content = await prisma.profilContent.findFirst();
 
     if (!content) {
-      // Create default content if none exists
       content = await prisma.profilContent.create({
         data: DEFAULT_CONTENT
       });
@@ -128,7 +127,6 @@ export async function getSambutanContent(): Promise<SambutanContent> {
     let content = contentList[0];
 
     if (!content) {
-      // Create default content if none exists
       content = await prisma.sambutanContent.create({
         data: DEFAULT_SAMBUTAN
       });
@@ -156,28 +154,22 @@ export async function updateSambutanContent(content: Partial<SambutanContent>): 
       orderBy: { updatedAt: 'desc' }
     });
 
-    // Cleanup duplicates if any
     if (existing.length > 1) {
-      console.warn(`[Content] Found ${existing.length} sambutan records. Cleaning up...`);
-      const keepId = existing[0].id; // Keep the most recently updated one
+      const keepId = existing[0].id;
       const deleteIds = existing.slice(1).map(r => r.id);
 
       await prisma.sambutanContent.deleteMany({
         where: { id: { in: deleteIds } }
       });
-      console.log(`[Content] Deleted ${deleteIds.length} duplicate records.`);
     }
 
     const currentRecord = existing[0];
 
     if (currentRecord) {
-      console.log(`[Content] Updating existing sambutan record: ${currentRecord.id}`);
       const updated = await prisma.sambutanContent.update({
         where: { id: currentRecord.id },
         data: content
       });
-
-      console.log(`[Content] Updated sambutan successfully. New fotoUrl: ${updated.fotoUrl}`);
 
       return {
         id: updated.id,
@@ -190,7 +182,6 @@ export async function updateSambutanContent(content: Partial<SambutanContent>): 
         updatedAt: updated.updatedAt
       };
     } else {
-      console.log('[Content] improved creating new sambutan record');
       const created = await prisma.sambutanContent.create({
         data: content as Omit<SambutanContent, 'id' | 'updatedAt'>
       });
@@ -280,9 +271,6 @@ export async function updateLayananContent(content: Partial<LayananContent>): Pr
   }
 }
 
-// =====================
-// KEGIATAN CONTENT
-// =====================
 
 export type KategoriKegiatan = 'perikanan' | 'pertanian' | 'pendidikan' | 'keagamaan';
 

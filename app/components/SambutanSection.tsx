@@ -18,7 +18,6 @@ export default function SambutanSection() {
   useEffect(() => {
     fetchContent();
 
-    // Refresh data setiap 2 detik untuk real-time updates
     const interval = setInterval(() => {
       fetchContent();
     }, 2000);
@@ -28,7 +27,6 @@ export default function SambutanSection() {
 
   const fetchContent = async () => {
     try {
-      // Force no-cache dengan timestamp dan cache-busting
       const url = new URL('/api/content/sambutan', window.location.origin);
       url.searchParams.set('_t', Date.now().toString());
 
@@ -41,11 +39,7 @@ export default function SambutanSection() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('[SambutanSection] Fetched data:', data);
-        setContent(prevContent => {
-          console.log('[SambutanSection] Previous:', prevContent, 'New:', data);
-          return data;
-        });
+        setContent(data);
       }
     } catch (error) {
       console.error('Error fetching sambutan:', error);

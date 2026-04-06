@@ -13,7 +13,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file type
     if (!file.type.startsWith('image/')) {
       return NextResponse.json(
         { error: 'File harus berupa gambar' },
@@ -21,7 +20,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
         { error: 'Ukuran file maksimal 5MB' },
@@ -30,15 +28,12 @@ export async function POST(request: NextRequest) {
     }
 
     const timestamp = Date.now();
-    // Sanitize filename
     const filename = `${timestamp}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '')}`;
     const bucketName = 'uploads';
 
-    // Convert file to buffer for upload
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Upload to Supabase Storage
     const { data: uploadData, error: uploadError } = await supabase.storage
       .from(bucketName)
       .upload(filename, buffer, {
@@ -54,7 +49,6 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get Public URL
     const { data: publicUrlData } = supabase.storage
       .from(bucketName)
       .getPublicUrl(filename);
