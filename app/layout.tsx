@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./providers";
 import Footer from "./components/Footer";
 import Header from "./components/Header"; 
+import FloatingSocial from "./components/FloatingSocial";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -44,6 +45,9 @@ export default function RootLayout({
 
           {/* FOOTER */}
           <Footer />
+          
+          {/* FLOATING SOCIAL */}
+          <FloatingSocial />
         </Providers>
       </body>
     </html>
