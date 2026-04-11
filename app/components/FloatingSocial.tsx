@@ -1,4 +1,7 @@
+"use client";
+
 import React from "react";
+import { usePathname } from "next/navigation";
 import { Instagram, Facebook, Twitter } from "lucide-react";
 import Link from "next/link";
 
@@ -44,6 +47,13 @@ const socialLinks = [
 ];
 
 export default function FloatingSocial() {
+  const pathname = usePathname();
+  const hidePaths = ["/admin", "/login", "/register", "/auth"];
+  
+  if (hidePaths.some((path) => pathname?.startsWith(path))) {
+    return null;
+  }
+
   return (
     <div className="fixed left-0 top-1/2 z-50 flex -translate-y-1/2 flex-col gap-3">
       {socialLinks.map((social) => (
