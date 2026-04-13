@@ -63,6 +63,7 @@ interface KegiatanItem {
   title: string;
   deskripsi?: string;
   imageUrl: string;
+  imageUrls?: string[];
   urutan: number;
 }
 
@@ -660,10 +661,44 @@ export default function AdminDashboard() {
       const data = await response.json();
       setEditingKegiatanItem(prev => ({ ...prev, imageUrl: data.url }));
     } catch (err) {
-      setError('Gagal upload gambar');
+      setError('Gagal upload gambar utama');
     } finally {
       setUploading(false);
     }
+  };
+
+  const handleUploadKegiatanGalleryImages = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+    setUploading(true);
+    setError('');
+    try {
+      const uploadedUrls: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const formData = new FormData();
+        formData.append('file', files[i]);
+        const response = await fetch('/api/upload', { method: 'POST', body: formData });
+        if (!response.ok) throw new Error('Salah satu upload gagal');
+        const data = await response.json();
+        uploadedUrls.push(data.url);
+      }
+      setEditingKegiatanItem(prev => {
+        const existing = prev?.imageUrls || [];
+        return { ...prev, imageUrls: [...existing, ...uploadedUrls] };
+      });
+    } catch (err) {
+      setError('Gagal upload beberapa gambar galeri');
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleRemoveKegiatanGalleryImage = (indexToRemove: number) => {
+    setEditingKegiatanItem(prev => {
+      if (!prev) return prev;
+      const filtered = (prev.imageUrls || []).filter((_, i) => i !== indexToRemove);
+      return { ...prev, imageUrls: filtered };
+    });
   };
 
   const handleLogout = async () => {
@@ -1599,21 +1634,21 @@ export default function AdminDashboard() {
               {!isKegiatanItemFormOpen ? (
                 <>
                   <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-xl font-bold text-gray-800">Galeri {activeKategori}</h2>
+                    <h2 className="text-xl font-bold text-gray-800">Program {activeKategori}</h2>
                     <button
                       onClick={() => {
-                        setEditingKegiatanItem({ kategori: activeKategori, urutan: kegiatanItems.length });
+                        setEditingKegiatanItem({ kategori: activeKategori, urutan: kegiatanItems.length, imageUrls: [] });
                         setIsKegiatanItemFormOpen(true);
                       }}
                       className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700"
                     >
-                      + Tambah Foto
+                      + Tambah Program
                     </button>
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {kegiatanItems.length === 0 ? (
-                      <p className="text-gray-500 col-span-full py-4 text-center border-2 border-dashed rounded-xl">Belum ada foto.</p>
+                      <p className="text-gray-500 col-span-full py-4 text-center border-2 border-dashed rounded-xl">Belum ada program.</p>
                     ) : (
                       kegiatanItems.map((item) => (
                         <div key={item.id} className="border p-4 rounded-lg flex flex-col gap-3">
@@ -1649,12 +1684,12 @@ export default function AdminDashboard() {
               ) : (
                 <div className="space-y-6">
                   <h2 className="text-xl font-bold text-gray-800 border-b pb-4">
-                    {editingKegiatanItem?.id ? 'Edit Foto' : 'Tambah Foto Baru'}
+                    {editingKegiatanItem?.id ? 'Edit Program' : 'Tambah Program Baru'}
                   </h2>
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Judul Foto</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Nama Program</label>
                         <input
                           type="text"
                           value={editingKegiatanItem?.title || ''}
@@ -1663,7 +1698,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Keterangan (Opsional)</label>
+                        <label className="block text-sm font-semibold text-gray-700 mb-1">Deskripsi Program (Opsional)</label>
                         <textarea
                           value={editingKegiatanItem?.deskripsi || ''}
                           onChange={(e) => setEditingKegiatanItem(prev => ({ ...prev, deskripsi: e.target.value }))}
@@ -1682,7 +1717,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Foto / Gambar</label>
+                      <label className="block text-sm font-semibold text-gray-700 mb-2">Foto Utama</label>
                       <div className="space-y-4">
                         {editingKegiatanItem?.imageUrl ? (
                           <div className="relative w-full aspect-video">
@@ -1690,7 +1725,7 @@ export default function AdminDashboard() {
                           </div>
                         ) : (
                           <div className="w-full aspect-video bg-gray-100 rounded-lg border-2 border-dashed border-gray-300 flex items-center justify-center text-gray-400">
-                            Belum ada foto
+                            Belum ada foto utama
                           </div>
                         )}
                         <input
@@ -1701,11 +1736,40 @@ export default function AdminDashboard() {
                           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700"
                         />
                       </div>
+
+                      <div className="mt-8">
+                        <label className="block text-sm font-semibold text-gray-700 mb-2">Galeri Tambahan Program</label>
+                        {editingKegiatanItem?.imageUrls && editingKegiatanItem.imageUrls.length > 0 && (
+                          <div className="grid grid-cols-3 gap-2 mb-4">
+                            {editingKegiatanItem.imageUrls.map((url, idx) => (
+                              <div key={idx} className="relative aspect-square">
+                                <img src={url} alt={`Gallery ${idx}`} className="w-full h-full object-cover rounded shadow-sm" />
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveKegiatanGalleryImage(idx)}
+                                  className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs opacity-80 hover:opacity-100"
+                                >
+                                  ×
+                                </button>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                        <input
+                          type="file"
+                          accept="image/*"
+                          multiple
+                          onChange={handleUploadKegiatanGalleryImages}
+                          disabled={uploading}
+                          className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:bg-blue-50 file:text-blue-700"
+                        />
+                        <p className="text-xs text-gray-400 mt-1">Anda bisa memilih lebih dari satu gambar sekaligus untuk galeri.</p>
+                      </div>
                     </div>
                   </div>
                   <div className="flex gap-3 pt-4 border-t">
                     <button onClick={handleSaveKegiatanItem} disabled={saving || uploading} className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
-                      {saving ? 'Menyimpan...' : 'Simpan Foto'}
+                      {saving ? 'Menyimpan...' : 'Simpan Program'}
                     </button>
                     <button onClick={() => { setIsKegiatanItemFormOpen(false); setEditingKegiatanItem(null); }} className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg">
                       Batal

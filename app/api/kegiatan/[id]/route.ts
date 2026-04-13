@@ -8,7 +8,7 @@ export async function PUT(
   try {
     const resolvedParams = await params;
     const body = await request.json();
-    const { title, deskripsi, imageUrl, urutan } = body;
+    const { title, deskripsi, imageUrl, imageUrls, urutan } = body;
 
     if (!title) {
       return NextResponse.json({ error: 'Title wajib diisi' }, { status: 400 });
@@ -20,6 +20,7 @@ export async function PUT(
         title,
         deskripsi,
         imageUrl,
+        imageUrls: imageUrls || [],
         urutan: urutan ? parseInt(urutan) : 0,
       },
     });

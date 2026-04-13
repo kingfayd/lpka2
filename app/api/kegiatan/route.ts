@@ -24,7 +24,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { kategori, title, deskripsi, imageUrl, urutan } = body;
+    const { kategori, title, deskripsi, imageUrl, imageUrls, urutan } = body;
 
     if (!kategori || !title || !imageUrl) {
       return NextResponse.json({ error: 'Kategori, title, dan imageUrl wajib diisi' }, { status: 400 });
@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
         title,
         deskripsi,
         imageUrl,
+        imageUrls: imageUrls || [],
         urutan: urutan ? parseInt(urutan) : 0,
       },
     });

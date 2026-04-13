@@ -16,6 +16,7 @@ interface KegiatanItem {
   title: string;
   deskripsi?: string;
   imageUrl: string;
+  imageUrls?: string[];
 }
 
 export default function KegiatanPage() {
@@ -86,43 +87,70 @@ export default function KegiatanPage() {
                 {content.deskripsi}
               </p>
 
-              {/* GALERI ITEM */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {/* DAFTAR PROGRAM / KEGIATAN */}
+              <div className="space-y-24">
                 {items.length > 0 ? (
-                  items.map((item) => (
-                    <div
-                      key={item.id}
-                      className="bg-white/95 border border-gray-100/50 rounded-3xl shadow-lg hover:-translate-y-1 transition-all duration-300 group overflow-hidden flex flex-col"
-                    >
-                      <div className="aspect-video bg-gray-100 overflow-hidden relative">
-                        {item.imageUrl ? (
-                           <img
-                             src={item.imageUrl}
-                             alt={item.title}
-                             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                           />
-                        ) : (
-                           <div className="w-full h-full flex items-center justify-center text-gray-400">
-                             No Image
-                           </div>
+                  items.map((item, index) => {
+                    const isEven = index % 2 === 0;
+                    return (
+                      <div key={item.id} className="flex flex-col gap-8">
+                        {/* Main Layout Zig-Zag */}
+                        <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 lg:gap-16 items-center`}>
+                          {/* Main Image */}
+                          <div className="w-full lg:w-1/2">
+                            <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl relative group">
+                              {item.imageUrl ? (
+                                <img
+                                  src={item.imageUrl}
+                                  alt={item.title}
+                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
+                                />
+                              ) : (
+                                <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
+                                  No Image
+                                </div>
+                              )}
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                            </div>
+                          </div>
+
+                          {/* Content */}
+                          <div className="w-full lg:w-1/2 space-y-6">
+                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
+                              {item.title}
+                            </h2>
+                            {item.deskripsi && (
+                              <p className="text-lg text-gray-600 leading-relaxed text-justify">
+                                {item.deskripsi}
+                              </p>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Extra Gallery / Gallery Tambahan */}
+                        {item.imageUrls && item.imageUrls.length > 0 && (
+                          <div className="mt-4">
+                            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">Galeri Dokumentasi Program</h4>
+                            <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar snap-x">
+                              {item.imageUrls.map((url, idx) => (
+                                <div key={idx} className="snap-start shrink-0 w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-md group">
+                                  <img
+                                    src={url}
+                                    alt={`${item.title} foto ${idx + 1}`}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                  />
+                                </div>
+                              ))}
+                            </div>
+                          </div>
                         )}
                       </div>
-                      <div className="p-6 flex flex-col flex-grow">
-                        <h3 className="text-xl font-bold text-gray-900 mb-2">
-                          {item.title}
-                        </h3>
-                        {item.deskripsi && (
-                          <p className="text-gray-600 text-sm leading-relaxed">
-                            {item.deskripsi}
-                          </p>
-                        )}
-                      </div>
-                    </div>
-                  ))
+                    );
+                  })
                 ) : (
-                  <div className="col-span-full py-10 text-center border-2 border-dashed border-gray-200 rounded-2xl">
+                  <div className="py-20 text-center border-2 border-dashed border-gray-200 rounded-3xl bg-gray-50/50">
                     <p className="text-gray-500 text-lg">
-                      Belum ada dokumentasi untuk kegiatan ini.
+                      Belum ada dokumentasi program untuk kegiatan ini.
                     </p>
                   </div>
                 )}
