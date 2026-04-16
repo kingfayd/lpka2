@@ -1,8 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
-import Header from '../../components/Header';
-import Footer from '../../components/Footer';
+
 import { useEffect, useState } from 'react';
 
 interface KegiatanContent {
@@ -65,7 +64,6 @@ export default function KegiatanPage() {
 
   return (
     <main className="min-h-screen flex flex-col">
-      <Header />
       
       <section className="w-full bg-white pt-32 pb-16 flex-grow">
         <div className="max-w-6xl mx-auto px-6">
@@ -159,8 +157,6 @@ export default function KegiatanPage() {
           )}
         </div>
       </section>
-      
-      <Footer />
     </main>
   );
 }
