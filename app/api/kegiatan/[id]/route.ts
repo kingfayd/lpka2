@@ -1,6 +1,27 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
 
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const resolvedParams = await params;
+    const item = await prisma.kegiatanItem.findUnique({
+      where: { id: resolvedParams.id },
+    });
+
+    if (!item) {
+      return NextResponse.json({ error: 'Item tidak ditemukan' }, { status: 404 });
+    }
+
+    return NextResponse.json(item);
+  } catch (error) {
+    console.error('Error fetching kegiatan item:', error);
+    return NextResponse.json({ error: 'Gagal mengambil item kegiatan' }, { status: 500 });
+  }
+}
+
 export async function PUT(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }

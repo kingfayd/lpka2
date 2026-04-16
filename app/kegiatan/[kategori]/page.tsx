@@ -1,6 +1,7 @@
 'use client';
 
 import { useParams } from 'next/navigation';
+import Link from 'next/link';
 
 import { useEffect, useState } from 'react';
 
@@ -65,7 +66,7 @@ export default function KegiatanPage() {
   return (
     <main className="min-h-screen flex flex-col">
       
-      <section className="w-full bg-white pt-32 pb-16 flex-grow">
+      <section className="w-full bg-white pt-32 pb-16 grow">
         <div className="max-w-6xl mx-auto px-6">
           {loading ? (
              <div className="flex justify-center items-center h-40">
@@ -91,58 +92,47 @@ export default function KegiatanPage() {
                   items.map((item, index) => {
                     const isEven = index % 2 === 0;
                     return (
-                      <div key={item.id} className="flex flex-col gap-8">
-                        {/* Main Layout Zig-Zag */}
-                        <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} gap-8 lg:gap-16 items-center`}>
-                          {/* Main Image */}
-                          <div className="w-full lg:w-1/2">
-                            <div className="aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl relative group">
-                              {item.imageUrl ? (
-                                <img
-                                  src={item.imageUrl}
-                                  alt={item.title}
-                                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 ease-out"
-                                />
-                              ) : (
-                                <div className="w-full h-full bg-gray-100 flex items-center justify-center text-gray-400">
-                                  No Image
-                                </div>
-                              )}
-                              <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                            </div>
-                          </div>
-
-                          {/* Content */}
-                          <div className="w-full lg:w-1/2 space-y-6">
-                            <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
-                              {item.title}
-                            </h2>
-                            {item.deskripsi && (
-                              <p className="text-lg text-gray-600 leading-relaxed text-justify">
-                                {item.deskripsi}
-                              </p>
+                      <Link key={item.id} href={`/kegiatan/${kategori}/${item.id}`} className="group block">
+                        <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-stretch gap-8 p-6 md:p-8 bg-white border border-gray-200 rounded-4xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden lg:min-h-112`}>
+                          <div className="w-full lg:w-1/2 h-80 lg:h-full rounded-4xl overflow-hidden shadow-xl bg-gray-100">
+                            {item.imageUrl ? (
+                              <img
+                                src={item.imageUrl}
+                                alt={item.title}
+                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center text-gray-400">
+                                Tidak ada gambar
+                              </div>
                             )}
                           </div>
-                        </div>
 
-                        {/* Extra Gallery / Gallery Tambahan */}
-                        {item.imageUrls && item.imageUrls.length > 0 && (
-                          <div className="mt-4">
-                            <h4 className="text-sm font-semibold text-gray-500 uppercase tracking-widest mb-4">Galeri Dokumentasi Program</h4>
-                            <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar snap-x">
-                              {item.imageUrls.map((url, idx) => (
-                                <div key={idx} className="snap-start shrink-0 w-48 h-48 md:w-64 md:h-64 rounded-2xl overflow-hidden shadow-md group">
-                                  <img
-                                    src={url}
-                                    alt={`${item.title} foto ${idx + 1}`}
-                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                                  />
-                                </div>
-                              ))}
+                          <div className="w-full lg:w-1/2 flex flex-col justify-between gap-6 h-full">
+                            <div>
+                              <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 leading-tight group-hover:text-blue-700 transition-colors">
+                                {item.title}
+                              </h2>
+                              {item.deskripsi ? (
+                                <p className="mt-6 text-lg text-gray-600 leading-relaxed text-justify line-clamp-6">
+                                  {item.deskripsi}
+                                </p>
+                              ) : (
+                                <p className="mt-6 text-lg text-gray-600 leading-relaxed text-justify">
+                                  Deskripsi belum tersedia.
+                                </p>
+                              )}
+                            </div>
+
+                            <div className="mt-auto">
+                              <span className="inline-flex items-center text-blue-600 font-semibold hover:text-blue-800 transition-colors">
+                                Baca Selengkapnya
+                                <svg className="w-5 h-5 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+                              </span>
                             </div>
                           </div>
-                        )}
-                      </div>
+                        </div>
+                      </Link>
                     );
                   })
                 ) : (
