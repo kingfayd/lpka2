@@ -1,0 +1,25 @@
+{
+  "nav": {
+    "home": "Home",
+    "profile": "Profile",
+    "profileInstitution": "Institution Profile",
+    "visionMission": "Vision & Mission",
+    "officials": "Officials Profile",
+    "structure": "Organizational Structure",
+    "publicService": "Public Service",
+    "activities": "Activities",
+    "fisheries": "Fisheries",
+    "agriculture": "Agriculture",
+    "education": "Education",
+    "religious": "Religious",
+    "news": "News",
+    "contact": "Contact",
+    "language": "Language"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "readMore": "Read More",
+    "back": "Back"
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "nav": {
+    "home": "Beranda",
+    "profile": "Profil",
+    "profileInstitution": "Profil Lembaga",
+    "visionMission": "Visi & Misi",
+    "officials": "Profil Pejabat",
+    "structure": "Struktur Organisasi",
+    "publicService": "Layanan Publik",
+    "activities": "Kegiatan",
+    "fisheries": "Perikanan",
+    "agriculture": "Pertanian",
+    "education": "Pendidikan",
+    "religious": "Keagamaan",
+    "news": "Berita",
+    "contact": "Kontak",
+    "language": "Bahasa"
+  },
+  "common": {
+    "loading": "Memuat...",
+    "error": "Terjadi kesalahan",
+    "readMore": "Baca Selengkapnya",
+    "back": "Kembali"
+  }
+}

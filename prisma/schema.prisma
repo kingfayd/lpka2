@@ -69,7 +69,7 @@ model LayananItem {
 
 model KegiatanContent {
   id        String   @id @default(cuid())
-  kategori  String   @unique  // perikanan | pertanian | pendidikan | keagamaan
+  kategori  String   @unique  // perikanan | pertanian | pendidikan | keagamaan | kewirausahaan
   title     String
   deskripsi String
   updatedAt DateTime @default(now()) @updatedAt
@@ -77,7 +77,7 @@ model KegiatanContent {
 
 model KegiatanItem {
   id        String   @id @default(cuid())
-  kategori  String   // perikanan | pertanian | pendidikan | keagamaan
+  kategori  String   // perikanan | pertanian | pendidikan | keagamaan | kewirausahaan
   title     String
   deskripsi String?
   imageUrl  String

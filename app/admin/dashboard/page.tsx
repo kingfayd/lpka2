@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+export const dynamic = 'force-dynamic';
+
 interface ProfilContent {
   title: string;
   deskripsi: string;
@@ -67,7 +69,7 @@ interface KegiatanItem {
   urutan: number;
 }
 
-type KategoriKegiatan = 'perikanan' | 'pertanian' | 'pendidikan' | 'keagamaan';
+type KategoriKegiatan = 'perikanan' | 'pertanian' | 'pendidikan' | 'keagamaan' | 'kewirausahaan';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState<'profil' | 'sambutan' | 'artikel' | 'pejabat' | 'layanan' | 'kegiatan'>('profil');
@@ -1583,7 +1585,7 @@ export default function AdminDashboard() {
           <div className="space-y-6">
             <div className="bg-white rounded-lg shadow p-6">
               <div className="flex gap-4 mb-6 border-b pb-4 overflow-x-auto no-scrollbar whitespace-nowrap">
-                {(['perikanan', 'pertanian', 'pendidikan', 'keagamaan'] as KategoriKegiatan[]).map((kat) => (
+                {(['perikanan', 'pertanian', 'pendidikan', 'keagamaan', 'kewirausahaan'] as KategoriKegiatan[]).map((kat) => (
                   <button
                     key={kat}
                     onClick={() => setActiveKategori(kat)}

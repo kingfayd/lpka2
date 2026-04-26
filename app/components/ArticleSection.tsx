@@ -63,14 +63,14 @@ export default function ArticleSection() {
 
                 {/* Featured Article (Latest) */}
                 <div className="mb-16">
-                    <Link href={`/berita/${latestArticle.id}`}>
-                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300 cursor-pointer" data-aos="fade-up">
-                            <div className="md:flex">
-                                <div className="md:w-1/2 h-64 md:h-auto relative overflow-hidden group">
+                    <Link href={`/berita/${latestArticle.id}`} className="block group">
+                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300 cursor-pointer lg:h-[28rem]" data-aos="fade-up">
+                            <div className="flex flex-col md:flex-row h-full">
+                                <div className="md:w-1/2 h-64 md:h-full relative overflow-hidden flex-shrink-0">
                                     <img
                                         src={latestArticle.imageUrl || '/images/placeholder.jpg'}
                                         alt={latestArticle.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                 </div>
                                 <div className="p-8 md:p-12 md:w-1/2 flex flex-col justify-center">
@@ -101,33 +101,34 @@ export default function ArticleSection() {
                         <Link
                             key={article.id}
                             href={`/berita/${article.id}`}
+                            className="block"
                         >
                             <div
-                                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer h-full"
+                                className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 cursor-pointer h-full flex flex-col"
                                 data-aos="fade-up"
                                 data-aos-delay={index * 100}
                             >
-                                <div className="h-48 overflow-hidden relative group">
+                                <div className="h-56 overflow-hidden relative group flex-shrink-0">
                                     <img
                                         src={article.imageUrl || '/images/placeholder.jpg'}
                                         alt={article.title}
-                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
                                 </div>
-                                <div className="p-6">
+                                <div className="p-6 flex flex-col flex-grow">
                                     <div className="text-xs text-blue-600 font-semibold mb-2">
                                         {new Date(article.createdAt).toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
                                     </div>
                                     <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2 hover:text-blue-600 transition-colors">
                                         {article.title}
                                     </h3>
-                                    <p className="text-gray-600 text-sm line-clamp-3 mb-4">
+                                    <p className="text-gray-600 text-sm line-clamp-3 mb-4 flex-grow">
                                         {article.content}
                                     </p>
-                                    <div className="text-blue-600 font-medium hover:text-blue-800 transition-colors flex items-center gap-1 group">
+                                    <div className="text-blue-600 font-medium hover:text-blue-800 transition-colors flex items-center gap-1 group-hover:gap-2 mt-auto">
                                         Baca Selengkapnya
-                                        <span className="group-hover:translate-x-1 transition-transform">→</span>
+                                        <span className="transition-all">→</span>
                                     </div>
                                 </div>
                             </div>

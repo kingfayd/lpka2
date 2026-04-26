@@ -1,38 +1,21 @@
 'use client';
 
 import { useState } from 'react';
-import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
+import { login } from './actions';
 import Link from 'next/link';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const router = useRouter();
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (formData: FormData) => {
     setError('');
     setLoading(true);
 
-    try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+    const result = await login(formData);
 
-      if (error) {
-        setError(error.message);
-        return;
-      }
-
-      router.push('/admin/dashboard');
-      router.refresh();
-    } catch (err) {
-      setError('Terjadi kesalahan. Silakan coba lagi.');
-    } finally {
+    if (result?.error) {
+      setError(result.error);
       setLoading(false);
     }
   };
@@ -44,15 +27,14 @@ export default function LoginPage() {
           Login Admin
         </h1>
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form action={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Email
             </label>
             <input
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              name="email"
               placeholder="Masukkan email"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               disabled={loading}
@@ -66,8 +48,7 @@ export default function LoginPage() {
             </label>
             <input
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              name="password"
               placeholder="Masukkan password"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               disabled={loading}

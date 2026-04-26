@@ -59,6 +59,7 @@ export default function KegiatanPage() {
       pertanian: 'Pertanian',
       pendidikan: 'Pendidikan',
       keagamaan: 'Keagamaan',
+      kewirausahaan: 'Kewirausahaan',
     };
     return map[kategori?.toLowerCase()] || 'Kegiatan';
   };
@@ -93,8 +94,8 @@ export default function KegiatanPage() {
                     const isEven = index % 2 === 0;
                     return (
                       <Link key={item.id} href={`/kegiatan/${kategori}/${item.id}`} className="group block">
-                        <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-stretch gap-8 p-6 md:p-8 bg-white border border-gray-200 rounded-4xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden lg:min-h-112`}>
-                          <div className="w-full lg:w-1/2 h-80 lg:h-full rounded-4xl overflow-hidden shadow-xl bg-gray-100">
+                        <div className={`flex flex-col ${isEven ? 'lg:flex-row' : 'lg:flex-row-reverse'} items-stretch gap-8 p-6 md:p-8 bg-white border border-gray-200 rounded-4xl shadow-lg hover:shadow-2xl transition-all duration-300 overflow-hidden lg:h-[28rem]`}>
+                          <div className="w-full lg:w-1/2 h-80 lg:h-full rounded-4xl overflow-hidden shadow-xl bg-gray-100 flex-shrink-0">
                             {item.imageUrl ? (
                               <img
                                 src={item.imageUrl}

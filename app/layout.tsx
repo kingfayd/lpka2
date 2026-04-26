@@ -3,8 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers";
 import Footer from "./components/Footer";
-import Header from "./components/Header"; 
+import Header from "./components/Header";
 import FloatingSocial from "./components/FloatingSocial";
+import { NextIntlClientProvider } from 'next-intl';
+import { getMessages, getLocale } from 'next-intl/server';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,33 +24,38 @@ export const metadata: Metadata = {
     "Lembaga Pembinaan Khusus Anak Kelas 1 Tangerang - Melaksanakan pembinaan terhadap Anak Berhadapan dengan Hukum secara humanis dan berkelanjutan",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const locale = await getLocale();
+  const messages = await getMessages();
+
   return (
-    <html lang="id">
+    <html lang={locale}>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
       >
-        <Providers>
-          <div className="w-full">
-            {/* HEADER */}
-            <Header />
+        <NextIntlClientProvider messages={messages}>
+          <Providers>
+            <div className="w-full">
+              {/* HEADER */}
+              <Header />
 
-            {/* CONTENT */}
-            <main className="flex-1">
-              {children}
-            </main>
-          </div>
+              {/* CONTENT */}
+              <main className="flex-1">
+                {children}
+              </main>
+            </div>
 
-          {/* FOOTER */}
-          <Footer />
-          
-          {/* FLOATING SOCIAL */}
-          <FloatingSocial />
-        </Providers>
+            {/* FOOTER */}
+            <Footer />
+
+            {/* FLOATING SOCIAL */}
+            <FloatingSocial />
+          </Providers>
+        </NextIntlClientProvider>
       </body>
     </html>
   );

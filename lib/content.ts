@@ -272,7 +272,7 @@ export async function updateLayananContent(content: Partial<LayananContent>): Pr
 }
 
 
-export type KategoriKegiatan = 'perikanan' | 'pertanian' | 'pendidikan' | 'keagamaan';
+export type KategoriKegiatan = 'perikanan' | 'pertanian' | 'pendidikan' | 'keagamaan' | 'kewirausahaan';
 
 export interface KegiatanContent {
   id?: string;
@@ -317,6 +317,12 @@ const DEFAULT_KEGIATAN: Record<KategoriKegiatan, Omit<KegiatanContent, 'id' | 'u
     title: 'Kegiatan Keagamaan',
     deskripsi:
       'Program keagamaan di LPKA Kelas I Tangerang membina mental dan spiritual anak melalui pengajian, ibadah bersama, dan kegiatan rohani lainnya.',
+  },
+  kewirausahaan: {
+    kategori: 'kewirausahaan',
+    title: 'Kegiatan Kewirausahaan',
+    deskripsi:
+      'Program kewirausahaan di LPKA Kelas I Tangerang memberikan pelatihan kewirausahaan dan bisnis kepada anak binaan sebagai bekal kemandirian.',
   },
 };
 
