@@ -100,3 +100,43 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+
+// ==========================================
+// LPKASHOP (MARKETPLACE) MODELS
+// ==========================================
+
+enum MediaType {
+  IMAGE
+  VIDEO
+}
+
+model Category {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  products Product[]
+}
+
+model Product {
+  id          String         @id @default(cuid())
+  name        String
+  description String?
+  price       Float
+  stock       Int            @default(0)
+  imageUrl    String? // Keep as thumbnail
+  media       ProductMedia[]
+  shopeeUrl   String?
+  categoryId  String
+  category    Category       @relation(fields: [categoryId], references: [id])
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+}
+
+model ProductMedia {
+  id        String    @id @default(cuid())
+  url       String
+  type      MediaType @default(IMAGE)
+  productId String
+  product   Product   @relation(fields: [productId], references: [id], onDelete: Cascade)
+  order     Int       @default(0)
+  createdAt DateTime  @default(now())
+}

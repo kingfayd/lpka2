@@ -105,7 +105,7 @@ export default function KegiatanDetailPage() {
               </div>
             </div>
 
-            <section className="grid gap-10 lg:grid-cols-[1.4fr_0.6fr]">
+            <section className="max-w-4xl mx-auto w-full">
               <div className="space-y-8">
                 <div className="rounded-4xl overflow-hidden bg-white border border-gray-200 shadow-xl">
                   {item.imageUrl ? (
@@ -144,38 +144,6 @@ export default function KegiatanDetailPage() {
                   </div>
                 )}
               </div>
-
-              <aside className="space-y-6">
-                <div className="rounded-4xl bg-white border border-gray-200 shadow-xl p-8">
-                  <h3 className="text-xl font-semibold text-slate-900 mb-4">Informasi Program</h3>
-                  <div className="space-y-3 text-gray-600">
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="font-medium text-gray-700">Kategori</span>
-                      <span>{categoryLabel}</span>
-                    </div>
-                    <div className="flex items-center justify-between gap-4">
-                      <span className="font-medium text-gray-700">ID Program</span>
-                      <span>{item.id}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="rounded-4xl bg-white border border-gray-200 shadow-xl p-8">
-                  <h3 className="text-xl font-semibold text-slate-900 mb-4">Navigasi</h3>
-                  <ul className="space-y-4 text-gray-600">
-                    <li>
-                      <Link href={`/kegiatan/${kategori}`} className="block rounded-2xl border border-gray-200 bg-slate-50 px-4 py-3 text-sm font-medium hover:bg-slate-100 transition-colors">
-                        Kembali ke daftar {categoryLabel}
-                      </Link>
-                    </li>
-                    <li>
-                      <Link href="/kegiatan" className="block rounded-2xl border border-gray-200 bg-slate-50 px-4 py-3 text-sm font-medium hover:bg-slate-100 transition-colors">
-                        Lihat semua kategori kegiatan
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </aside>
             </section>
           </div>
         )}

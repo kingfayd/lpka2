@@ -1,0 +1,148 @@
+import { getProducts } from "@/lib/actions/product";
+import { getCategories } from "@/lib/actions/category";
+import Link from "next/link";
+import SearchBar from "@/app/components/SearchBar";
+import { ShoppingCart, ChevronLeft } from "lucide-react";
+import Image from "next/image";
+
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ q?: string; category?: string }>;
+}) {
+  const { q, category } = await searchParams;
+  const [products, categories] = await Promise.all([
+    getProducts(q, category),
+    getCategories(),
+  ]);
+
+  return (
+    <div className="bg-white min-h-screen font-sans text-black">
+      {/* Navbar */}
+      <nav className="border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur-md z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+          <Link href="/" className="text-2xl font-bold text-blue-600 shrink-0">
+            LPKA Shop
+          </Link>
+
+          <div className="flex-1 max-w-md hidden md:block">
+            <SearchBar />
+          </div>
+
+          <div className="flex items-center gap-4">
+            <Link 
+              href="/" 
+              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-blue-600 rounded-lg transition-colors border border-gray-200"
+            >
+              <ChevronLeft size={16} />
+              <span className="hidden sm:inline">Web Utama</span>
+              <span className="sm:hidden">Kembali</span>
+            </Link>
+          </div>
+        </div>
+        {/* Mobile Search Bar - Only visible on small screens */}
+        <div className="md:hidden px-4 pb-3">
+          <SearchBar />
+        </div>
+      </nav>
+
+      {/* Hero */}
+      <header className="bg-blue-600 py-16 px-4 text-center">
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
+          Karya Kreatif Anak Binaan LPKA
+        </h1>
+        <p className="text-blue-100 text-lg max-w-2xl mx-auto">
+          Setiap produk adalah bukti semangat dan transformasi anak-anak binaan LPKA. 
+          Dukung kemandirian mereka dengan mengapresiasi karya tangan berkualitas tinggi.
+        </p>
+      </header>
+
+      {/* Main Content */}
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex flex-col md:flex-row gap-8">
+          {/* Categories Sidebar */}
+          <aside className="w-full md:w-64 shrink-0">
+            <h3 className="text-lg font-bold mb-4 text-gray-900 border-b pb-2">
+              Kategori
+            </h3>
+            <div className="flex md:flex-col flex-wrap gap-2">
+              <Link 
+                href={q ? `/?q=${q}` : "/"} 
+                className={`px-4 py-2 rounded-lg text-sm font-medium text-left transition-colors ${!category ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+              >
+                Semua Produk
+              </Link>
+              {categories.map((cat: any) => (
+                <Link
+                  key={cat.id}
+                  href={`/?category=${cat.id}${q ? `&q=${q}` : ''}`}
+                  className={`px-4 py-2 rounded-lg text-sm font-medium text-left transition-colors ${category === cat.id ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
+                >
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
+          </aside>
+
+          {/* Product Grid */}
+          <div className="flex-1">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+              {products.length === 0 ? (
+                <div className="col-span-full py-20 text-center text-gray-400">
+                  Belum ada produk yang tersedia.
+                </div>
+              ) : (
+                products.map((product: any, index: number) => (
+                  <Link
+                    href={`/marketplace/products/${product.id}`}
+                    key={product.id}
+                    className="group bg-white border border-gray-100 rounded-2xl overflow-hidden hover:shadow-xl transition-all duration-300"
+                  >
+                    <div className="aspect-square bg-gray-50 relative overflow-hidden">
+                      {product.imageUrl ? (
+                        <Image
+                          src={product.imageUrl}
+                          alt={product.name}
+                          fill
+                          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                          priority={index === 0}
+                          className="object-cover group-hover:scale-105 transition-transform duration-500"
+                        />
+                      ) : (
+                        <div className="w-full h-full flex items-center justify-center text-gray-300">
+                          No Image
+                        </div>
+                      )}
+                    </div>
+                    <div className="p-5">
+                      <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest">
+                        {product.category.name}
+                      </span>
+                      <h4 className="mt-1 text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors line-clamp-1">
+                        {product.name}
+                      </h4>
+                      <p className="mt-2 text-xl font-black text-gray-900">
+                        Rp {product.price.toLocaleString("id-ID")}
+                      </p>
+                      <button className="mt-4 w-full bg-gray-950 text-white py-2.5 rounded-xl text-sm font-bold flex items-center justify-center gap-2 group-hover:bg-blue-600 transition-colors">
+                        <ShoppingCart size={18} />
+                        Lihat Detail
+                      </button>
+                    </div>
+                  </Link>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      </main>
+
+      {/* Footer */}
+      <footer className="bg-gray-50 border-t border-gray-200 py-12 mt-20">
+        <div className="max-w-7xl mx-auto px-4 text-center text-gray-400 text-sm">
+          <p>© 2026 LPKA Shop. All rights reserved.</p>
+        </div>
+      </footer>
+    </div>
+  );
+}

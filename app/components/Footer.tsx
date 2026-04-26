@@ -8,7 +8,7 @@ export default function Footer() {
   const waMessage =
     "Halo LPKA Kelas 1 Tangerang, saya ingin mendapatkan informasi lebih lanjut.";
 
-  const hideFooterPaths = ["/admin", "/login", "/register", "/auth", "/berita"];
+  const hideFooterPaths = ["/admin", "/login", "/register", "/auth", "/berita", "/marketplace"];
   if (hideFooterPaths.some(path => pathname?.startsWith(path))) {
     return null;
   }

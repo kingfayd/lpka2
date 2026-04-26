@@ -11,7 +11,7 @@ import { useTranslations, useLocale } from 'next-intl';
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
-  const hideHeaderPaths = ["/admin", "/login", "/register", "/auth", "/berita"];
+  const hideHeaderPaths = ["/admin", "/login", "/register", "/auth", "/berita", "/marketplace"];
   const isAdminPage = hideHeaderPaths.some(path => pathname?.startsWith(path));
 
   if (isAdminPage) {
@@ -133,6 +133,14 @@ export default function Header() {
               </Link>
             </div>
           </div>
+
+          <Link
+            href="/marketplace"
+            className="text-sm text-gray-700 font-medium hover:text-gray-900 transition-colors relative group"
+          >
+            {t('marketplace')}
+            <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-900 group-hover:w-full transition-all duration-300" />
+          </Link>
         </nav>
 
         {/* MOBILE BUTTON */}
@@ -270,6 +278,14 @@ export default function Header() {
                 </Link>
               </div>
             )}
+
+            <Link
+              href="/marketplace"
+              className="px-4 py-2.5 text-sm text-gray-700 font-medium hover:text-gray-900 hover:bg-gray-50 rounded-lg transition-colors"
+              onClick={() => setOpen(false)}
+            >
+              {t('marketplace')}
+            </Link>
           </nav>
         </div>
       )}

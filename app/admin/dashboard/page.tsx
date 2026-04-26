@@ -789,6 +789,12 @@ export default function AdminDashboard() {
           >
             Kegiatan
           </button>
+          <Link
+            href="/admin/marketplace/products"
+            className="py-3 px-3 sm:px-4 font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-800 transition"
+          >
+            Marketplace
+          </Link>
         </div>
       </div>
 
