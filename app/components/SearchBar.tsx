@@ -12,6 +12,16 @@ export default function SearchBar() {
     const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
 
+    const q = searchParams.get("q") || "";
+
+    // Sync input when URL changes externally
+    useEffect(() => {
+        if (q !== debouncedSearchTerm) {
+            setSearchTerm(q);
+        }
+    }, [q, debouncedSearchTerm]);
+
+    // Push to URL only when debouncedSearchTerm changes
     useEffect(() => {
         const currentParamsStr = searchParams.toString();
         const params = new URLSearchParams(currentParamsStr);
@@ -27,7 +37,8 @@ export default function SearchBar() {
             const query = newParamsStr ? `?${newParamsStr}` : '';
             router.push(`${pathname}${query}`, { scroll: false });
         }
-    }, [debouncedSearchTerm, router, searchParams, pathname]);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [debouncedSearchTerm]);
 
     return (
         <div className="relative w-full max-w-md">
