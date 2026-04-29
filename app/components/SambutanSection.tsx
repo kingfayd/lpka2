@@ -17,17 +17,11 @@ export default function SambutanSection() {
 
   useEffect(() => {
     fetchContent();
-
-    const interval = setInterval(() => {
-      fetchContent();
-    }, 2000);
-
-    return () => clearInterval(interval);
   }, []);
 
   const fetchContent = async () => {
     try {
-      const url = new URL('/api/content/sambutan', window.location.origin);
+      const url = new URL('/api/content/pimpinan', window.location.origin);
       url.searchParams.set('_t', Date.now().toString());
 
       const response = await fetch(url.toString(), {

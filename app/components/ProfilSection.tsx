@@ -25,12 +25,6 @@ export default function ProfilSection() {
 
   useEffect(() => {
     fetchContent();
-
-    const interval = setInterval(() => {
-      fetchContent();
-    }, 2000);
-
-    return () => clearInterval(interval);
   }, []);
 
   const fetchContent = async () => {

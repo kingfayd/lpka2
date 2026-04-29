@@ -51,18 +51,9 @@ export default function ProductsClient({
 
     return (
         <div className="max-w-6xl">
-            <header className="mb-8 text-black flex justify-between items-center">
-                <div>
-                    <h2 className="text-2xl font-bold text-gray-900">Manage Produk</h2>
-                    <p className="text-gray-500">Tambah, edit, atau hapus produk dari katalog.</p>
-                </div>
-                <Link 
-                    href="/admin/dashboard" 
-                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-gray-600 bg-gray-50 hover:bg-gray-100 hover:text-blue-600 rounded-lg transition-colors border border-gray-200"
-                >
-                    <ChevronLeft size={16} />
-                    Dashboard
-                </Link>
+            <header className="mb-8 text-black">
+                <h2 className="text-2xl font-bold text-gray-900">Manage Produk</h2>
+                <p className="text-gray-500">Tambah, edit, atau hapus produk dari katalog.</p>
             </header>
 
             <ProductForm

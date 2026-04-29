@@ -57,8 +57,17 @@ export default async function ProductDetailPage({
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
                 <div className="flex flex-col lg:flex-row gap-12">
                     {/* Image Gallery Slider */}
-                    <div className="flex-1">
+                    <div className="flex-1 space-y-10">
                         <MediaSlider media={product.media} thumbnail={product.imageUrl} />
+                        
+                        <div className="text-gray-600 max-w-none">
+                            <h3 className="text-lg font-bold text-gray-900 border-b pb-2 mb-4">
+                                Deskripsi Produk
+                            </h3>
+                            <p className="whitespace-pre-wrap leading-relaxed">
+                                {product.description || "Tidak ada deskripsi untuk produk ini."}
+                            </p>
+                        </div>
                     </div>
 
                     {/* Product Info */}
@@ -75,14 +84,6 @@ export default async function ProductDetailPage({
                             </p>
                         </div>
 
-                        <div className="text-gray-600 max-w-none">
-                            <h3 className="text-lg font-bold text-gray-900 border-b pb-2 mb-4">
-                                Deskripsi Produk
-                            </h3>
-                            <p className="whitespace-pre-wrap leading-relaxed">
-                                {product.description || "Tidak ada deskripsi untuk produk ini."}
-                            </p>
-                        </div>
 
                         <div className="bg-gray-50 p-6 rounded-2xl border border-gray-100 space-y-4">
                             <div className="flex items-center gap-3 text-sm text-gray-600">
@@ -104,7 +105,7 @@ export default async function ProductDetailPage({
                             className="w-full bg-[#25D366] text-white py-4 rounded-2xl text-lg font-bold flex items-center justify-center gap-3 hover:bg-[#20ba5a] transition-all transform hover:scale-[1.02] active:scale-95 shadow-lg shadow-green-200"
                         >
                             <MessageCircle size={24} />
-                            Beli Sekarang via WhatsApp
+                            Tanya Produk via WhatsApp
                         </a>
 
                         {product.shopeeUrl && (

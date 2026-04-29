@@ -110,7 +110,7 @@ export default function AdminDashboard() {
     try {
       const [profilRes, sambutanRes] = await Promise.all([
         fetch('/api/content/profil'),
-        fetch('/api/content/sambutan'),
+        fetch('/api/content/pimpinan'),
         fetch('/api/articles'),
       ]);
 
@@ -249,7 +249,7 @@ export default function AdminDashboard() {
 
     try {
       const token = localStorage.getItem('adminToken');
-      const response = await fetch('/api/content/sambutan', {
+      const response = await fetch('/api/content/pimpinan', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -790,10 +790,10 @@ export default function AdminDashboard() {
             Kegiatan
           </button>
           <Link
-            href="/admin/marketplace/products"
+            href="/admin/marketplace"
             className="py-3 px-3 sm:px-4 font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-800 transition"
           >
-            Marketplace
+            Marketplace Shop
           </Link>
         </div>
       </div>
