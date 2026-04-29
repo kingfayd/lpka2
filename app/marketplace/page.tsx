@@ -67,7 +67,7 @@ export default async function Home({
             </h3>
             <div className="flex md:flex-col flex-wrap gap-2">
               <Link 
-                href={q ? `/?q=${q}` : "/"} 
+                href={q ? `/marketplace?q=${q}` : "/marketplace"} 
                 className={`px-4 py-2 rounded-lg text-sm font-medium text-left transition-colors ${!category ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
               >
                 Semua Produk
@@ -75,7 +75,7 @@ export default async function Home({
               {categories.map((cat: any) => (
                 <Link
                   key={cat.id}
-                  href={`/?category=${cat.id}${q ? `&q=${q}` : ''}`}
+                  href={`/marketplace?category=${cat.id}${q ? `&q=${q}` : ''}`}
                   className={`px-4 py-2 rounded-lg text-sm font-medium text-left transition-colors ${category === cat.id ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-100'}`}
                 >
                   {cat.name}

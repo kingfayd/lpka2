@@ -1,12 +1,13 @@
 "use client";
 
 import { Search, X } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDebounce } from "@/lib/hooks/useDebounce";
 
 export default function SearchBar() {
     const router = useRouter();
+    const pathname = usePathname();
     const searchParams = useSearchParams();
     const [searchTerm, setSearchTerm] = useState(searchParams.get("q") || "");
     const debouncedSearchTerm = useDebounce(searchTerm, 500);
@@ -24,9 +25,9 @@ export default function SearchBar() {
         const newParamsStr = params.toString();
         if (currentParamsStr !== newParamsStr) {
             const query = newParamsStr ? `?${newParamsStr}` : '';
-            router.push(`/${query}`, { scroll: false });
+            router.push(`${pathname}${query}`, { scroll: false });
         }
-    }, [debouncedSearchTerm, router, searchParams]);
+    }, [debouncedSearchTerm, router, searchParams, pathname]);
 
     return (
         <div className="relative w-full max-w-md">
