@@ -14,7 +14,7 @@ const socialLinks = [
   },
   {
     name: "Facebook",
-    href: "https://facebook.com/lpka",
+    href: "https://web.facebook.com/lpka1tangerang",
     icon: <Facebook size={20} />,
     colorClass: "bg-[#1877F2] hover:bg-[#166fe5] text-white",
   },
@@ -40,7 +40,7 @@ const socialLinks = [
   },
   {
     name: "Twitter",
-    href: "https://twitter.com/lpka",
+    href: "https://x.com/LpkaTangerang",
     icon: <Twitter size={20} />,
     colorClass: "bg-sky-500 hover:bg-sky-600 text-white",
   },
