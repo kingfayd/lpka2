@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 
 export default function Footer() {
   const pathname = usePathname();
-  const waNumber = "6281327413926";
+  const waNumber = "6281386241976";
   const waMessage =
     "Halo LPKA Kelas 1 Tangerang, saya ingin mendapatkan informasi lebih lanjut.";
 

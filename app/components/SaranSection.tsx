@@ -8,7 +8,7 @@ export default function SaranSection() {
   const [submitted, setSubmitted] = useState(false);
   const [focused, setFocused] = useState<string | null>(null);
 
-  const waNumber = "6281327413926";
+  const waNumber = "6281386241976";
   const emailTujuan = "magangmanis59@gmail.com";
 
   const handleChange = (
