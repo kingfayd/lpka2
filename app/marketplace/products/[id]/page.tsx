@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ChevronLeft, MessageCircle, Package, ShieldCheck, ShoppingBag } from "lucide-react";
 import { notFound } from "next/navigation";
 import MediaSlider from "./MediaSlider";
-
+import Image from "next/image";
 export default async function ProductDetailPage({
     params,
 }: {
@@ -18,6 +18,13 @@ export default async function ProductDetailPage({
                 orderBy: { order: 'asc' }
             }
         },
+    });
+
+    const otherProducts = await prisma.product.findMany({
+        where: { id: { not: id } },
+        take: 3,
+        orderBy: { createdAt: 'desc' },
+        include: { category: true }
     });
 
     if (!product) {
@@ -118,6 +125,49 @@ export default async function ProductDetailPage({
                                 <ShoppingBag size={24} />
                                 Beli via Shopee
                             </a>
+                        )}
+
+                        {/* Produk Lainnya Section */}
+                        {otherProducts.length > 0 && (
+                            <div className="pt-8 mt-8 border-t border-gray-100">
+                                <h3 className="text-lg font-bold text-gray-900 mb-6">Produk Lainnya</h3>
+                                <div className="space-y-4">
+                                    {otherProducts.map((otherProduct) => (
+                                        <Link 
+                                            key={otherProduct.id} 
+                                            href={`/marketplace/products/${otherProduct.id}`}
+                                            className="group flex gap-4 p-3 rounded-2xl border border-gray-100 hover:border-blue-100 hover:bg-blue-50/50 transition-all bg-white"
+                                        >
+                                            <div className="relative w-20 h-20 rounded-xl overflow-hidden bg-gray-50 shrink-0">
+                                                {otherProduct.imageUrl ? (
+                                                    <Image
+                                                        src={otherProduct.imageUrl}
+                                                        alt={otherProduct.name}
+                                                        fill
+                                                        sizes="80px"
+                                                        className="object-cover group-hover:scale-105 transition-transform duration-300"
+                                                    />
+                                                ) : (
+                                                    <div className="w-full h-full flex items-center justify-center text-[10px] text-gray-400">
+                                                        No Image
+                                                    </div>
+                                                )}
+                                            </div>
+                                            <div className="flex flex-col justify-center">
+                                                <span className="text-[10px] font-bold text-blue-600 uppercase tracking-widest mb-1">
+                                                    {otherProduct.category.name}
+                                                </span>
+                                                <h4 className="text-sm font-bold text-gray-900 line-clamp-1 group-hover:text-blue-600 transition-colors">
+                                                    {otherProduct.name}
+                                                </h4>
+                                                <p className="text-sm font-black text-gray-900 mt-1">
+                                                    Rp {otherProduct.price.toLocaleString("id-ID")}
+                                                </p>
+                                            </div>
+                                        </Link>
+                                    ))}
+                                </div>
+                            </div>
                         )}
                     </div>
                 </div>
