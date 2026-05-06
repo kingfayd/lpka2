@@ -4,6 +4,7 @@ import Link from "next/link";
 import SearchBar from "@/app/components/SearchBar";
 import { ShoppingCart, ChevronLeft } from "lucide-react";
 import Image from "next/image";
+import MarketplaceHero from "@/app/components/MarketplaceHero";
 
 export default async function Home({
   searchParams,
@@ -17,7 +18,7 @@ export default async function Home({
   ]);
 
   return (
-    <div className="bg-white min-h-screen font-sans text-black">
+    <div className="bg-gray-100 min-h-screen font-sans text-black">
       {/* Navbar */}
       <nav className="border-b border-gray-100 sticky top-0 bg-white/80 backdrop-blur-md z-10">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
@@ -47,21 +48,13 @@ export default async function Home({
       </nav>
 
       {/* Hero */}
-      <header className="bg-blue-600 py-16 px-4 text-center">
-        <h1 className="text-4xl sm:text-5xl font-extrabold text-white mb-4">
-          Karya Kreatif Anak Binaan LPKA
-        </h1>
-        <p className="text-blue-100 text-lg max-w-2xl mx-auto">
-          Setiap produk adalah bukti semangat dan transformasi anak-anak binaan LPKA. 
-          Dukung kemandirian mereka dengan mengapresiasi karya tangan berkualitas tinggi.
-        </p>
-      </header>
+      <MarketplaceHero />
 
       {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Categories Sidebar */}
-          <aside className="w-full md:w-64 shrink-0">
+          <aside className="w-full md:w-64 shrink-0 md:sticky md:top-24 h-fit">
             <h3 className="text-lg font-bold mb-4 text-gray-900 border-b pb-2">
               Kategori
             </h3>
@@ -138,7 +131,7 @@ export default async function Home({
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-12 mt-20">
+      <footer className="bg-gray-100 border-t border-gray-200 py-12 mt-20">
         <div className="max-w-7xl mx-auto px-4 text-center text-gray-400 text-sm">
           <p>© 2026 LPKA Shop. All rights reserved.</p>
         </div>
