@@ -1,6 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
+import Link from "next/link";
 
 export default function Footer() {
   const pathname = usePathname();
@@ -21,7 +22,7 @@ export default function Footer() {
           {/* INFO */}
           <div>
             <h2 className="text-xl font-semibold mb-3 text-white">
-              LPKA
+              LPKA KELAS 1 TANGERANG
             </h2>
             <p className="text-sm text-gray-400 leading-relaxed">
               Lembaga Pembinaan Khusus Anak yang berkomitmen
@@ -35,14 +36,20 @@ export default function Footer() {
               Menu
             </h3>
             <ul className="space-y-2 text-sm">
-              {["Beranda", "Profil", "Program", "Kontak"].map((item) => (
-                <li key={item}>
-                  <a
-                    href={`#${item.toLowerCase()}`}
+              {[
+                { name: "Beranda", path: "/" },
+                { name: "Profil", path: "/profil" },
+                { name: "Layanan Publik", path: "/layananpublik" },
+                { name: "Kegiatan", path: "/kegiatan/perikanan" },
+                { name: "Marketplace", path: "/marketplace" }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link
+                    href={item.path}
                     className="hover:text-yellow-400 transition"
                   >
-                    {item}
-                  </a>
+                    {item.name}
+                  </Link>
                 </li>
               ))}
             </ul>
@@ -55,7 +62,7 @@ export default function Footer() {
             </h3>
             <ul className="text-sm text-gray-400 space-y-2">
               <li>📍 Indonesia</li>
-              <li>📧 info@lpka.go.id</li>
+              <li>📧 lpkatangerang1@gmail.com</li>
               <li className="flex items-center gap-2">
                 <span>📞</span>
                 <a
@@ -66,7 +73,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-green-500 transition font-medium"
                 >
-                  0813-2741-3926 (WhatsApp)
+                  0813-8624-1976 (WhatsApp)
                 </a>
               </li>
             </ul>
