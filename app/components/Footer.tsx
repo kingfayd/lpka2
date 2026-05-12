@@ -2,10 +2,23 @@
 
 import { usePathname } from "next/navigation";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 
 export default function Footer() {
   const pathname = usePathname();
-  const waNumber = "6281386241976";
+  const [waNumber, setWaNumber] = useState("6281386241976");
+  const [email, setEmail] = useState("lpkatangerang1@gmail.com");
+
+  useEffect(() => {
+    fetch('/api/kontak/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.whatsappNumber) setWaNumber(data.whatsappNumber);
+        if (data.email) setEmail(data.email);
+      })
+      .catch(err => console.error("Error fetching contact settings:", err));
+  }, []);
+
   const waMessage =
     "Halo LPKA Kelas 1 Tangerang, saya ingin mendapatkan informasi lebih lanjut.";
 
@@ -62,7 +75,7 @@ export default function Footer() {
             </h3>
             <ul className="text-sm text-gray-400 space-y-2">
               <li>📍 Indonesia</li>
-              <li>📧 lpkatangerang1@gmail.com</li>
+              <li>📧 {email}</li>
               <li className="flex items-center gap-2">
                 <span>📞</span>
                 <a
@@ -73,7 +86,7 @@ export default function Footer() {
                   rel="noopener noreferrer"
                   className="hover:text-green-500 transition font-medium"
                 >
-                  0813-8624-1976 (WhatsApp)
+                  {waNumber.startsWith('62') ? `0${waNumber.slice(2)}` : waNumber} (WhatsApp)
                 </a>
               </li>
             </ul>

@@ -140,3 +140,10 @@ model ProductMedia {
   order     Int       @default(0)
   createdAt DateTime  @default(now())
 }
+
+model ContactSettings {
+  id             String   @id @default(cuid())
+  email          String   @default("lpkatangerang1@gmail.com")
+  whatsappNumber String   @default("6281386241976")
+  updatedAt      DateTime @updatedAt
+}

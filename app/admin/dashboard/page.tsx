@@ -71,8 +71,14 @@ interface KegiatanItem {
 
 type KategoriKegiatan = 'perikanan' | 'pertanian' | 'pendidikan' | 'keagamaan' | 'kewirausahaan';
 
+interface ContactSettings {
+  id?: string;
+  email: string;
+  whatsappNumber: string;
+}
+
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<'profil' | 'sambutan' | 'artikel' | 'pejabat' | 'layanan' | 'kegiatan'>('profil');
+  const [activeTab, setActiveTab] = useState<'profil' | 'sambutan' | 'artikel' | 'pejabat' | 'layanan' | 'kegiatan' | 'kontak'>('profil');
   const [activeKategori, setActiveKategori] = useState<KategoriKegiatan>('perikanan');
   
   const [profilContent, setProfilContent] = useState<ProfilContent | null>(null);
@@ -83,6 +89,7 @@ export default function AdminDashboard() {
   const [layananItems, setLayananItems] = useState<LayananItem[]>([]);
   const [kegiatanContent, setKegiatanContent] = useState<KegiatanContent | null>(null);
   const [kegiatanItems, setKegiatanItems] = useState<KegiatanItem[]>([]);
+  const [contactSettings, setContactSettings] = useState<ContactSettings | null>(null);
 
   const [editingArticle, setEditingArticle] = useState<Partial<Article> | null>(null);
   const [editingPejabat, setEditingPejabat] = useState<Partial<Pejabat> | null>(null);
@@ -143,6 +150,11 @@ export default function AdminDashboard() {
       const layananItemsRes = await fetch('/api/layanan');
       if (layananItemsRes.ok) {
         setLayananItems(await layananItemsRes.json());
+      }
+
+      const contactRes = await fetch('/api/kontak/settings');
+      if (contactRes.ok) {
+        setContactSettings(await contactRes.json());
       }
     } catch (err) {
       setError('Gagal mengambil data');
@@ -709,6 +721,27 @@ export default function AdminDashboard() {
     router.push('/login');
   };
 
+  const handleSaveContact = async () => {
+    if (!contactSettings) return;
+    setSaving(true);
+    setError('');
+    setSuccess('');
+    try {
+      const response = await fetch('/api/kontak/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(contactSettings),
+      });
+      if (!response.ok) throw new Error('Gagal menyimpan kontak');
+      setSuccess('Kontak berhasil diupdate!');
+      setTimeout(() => setSuccess(''), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Terjadi kesalahan');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -789,6 +822,15 @@ export default function AdminDashboard() {
           >
             Kegiatan
           </button>
+          <button
+            onClick={() => setActiveTab('kontak')}
+            className={`py-3 px-3 sm:px-4 font-medium border-b-2 transition ${activeTab === 'kontak'
+              ? 'border-blue-600 text-blue-600'
+              : 'border-transparent text-gray-600 hover:text-gray-800'
+              }`}
+          >
+            Kontak
+          </button>
           <Link
             href="/admin/marketplace"
             className="py-3 px-3 sm:px-4 font-medium border-b-2 border-transparent text-gray-600 hover:text-gray-800 transition"
@@ -816,7 +858,7 @@ export default function AdminDashboard() {
         {activeTab === 'profil' && profilContent && (
           <div className="bg-white rounded-lg shadow p-6 space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Judul Profil
               </label>
               <input
@@ -830,7 +872,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Deskripsi
               </label>
               <textarea
@@ -844,7 +886,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Visi
               </label>
               <textarea
@@ -858,7 +900,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Misi
               </label>
               <div className="space-y-4 mb-4">
@@ -903,7 +945,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Tugas dan Fungsi
               </label>
               <textarea
@@ -926,7 +968,7 @@ export default function AdminDashboard() {
               </button>
               <Link
                 href="/profil"
-                className="w-full sm:w-auto px-6 py-2.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium text-center transition-colors"
+                className="w-full sm:w-auto px-6 py-2.5 bg-gray-100 text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium text-center transition-colors"
               >
                 Preview
               </Link>
@@ -938,7 +980,7 @@ export default function AdminDashboard() {
         {activeTab === 'sambutan' && sambutanContent && (
           <div className="bg-white rounded-lg shadow p-6 space-y-6">
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Foto Kepala LPKA
               </label>
               <div className="space-y-4">
@@ -974,7 +1016,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Nama Lengkap
               </label>
               <input
@@ -988,7 +1030,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Jabatan
               </label>
               <input
@@ -1002,7 +1044,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Paragraf 1
               </label>
               <textarea
@@ -1016,7 +1058,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Paragraf 2
               </label>
               <textarea
@@ -1030,7 +1072,7 @@ export default function AdminDashboard() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
                 Paragraf 3
               </label>
               <textarea
@@ -1053,7 +1095,7 @@ export default function AdminDashboard() {
               </button>
               <Link
                 href="/"
-                className="w-full sm:w-auto px-6 py-2.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium text-center transition-colors"
+                className="w-full sm:w-auto px-6 py-2.5 bg-gray-100 text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium text-center transition-colors"
               >
                 Preview
               </Link>
@@ -1092,7 +1134,7 @@ export default function AdminDashboard() {
                             </div>
                           )}
                           <div>
-                            <h3 className="font-bold text-lg">{article.title}</h3>
+                            <h3 className="font-bold text-lg text-gray-900">{article.title}</h3>
                             <p className="text-sm text-gray-500">
                               {new Date(article.createdAt).toLocaleDateString()}
                             </p>
@@ -1131,14 +1173,14 @@ export default function AdminDashboard() {
                       setIsArticleFormOpen(false);
                       setEditingArticle(null);
                     }}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-gray-500 hover:text-gray-900"
                   >
                     Batal
                   </button>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
                     Judul Artikel
                   </label>
                   <input
@@ -1153,7 +1195,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
                     Gambar Utama
                   </label>
                   <div className="space-y-4">
@@ -1192,7 +1234,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">
                     Konten Artikel
                   </label>
                   <textarea
@@ -1219,7 +1261,7 @@ export default function AdminDashboard() {
                       setIsArticleFormOpen(false);
                       setEditingArticle(null);
                     }}
-                    className="px-6 py-2.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium"
+                    className="px-6 py-2.5 bg-gray-100 text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium"
                   >
                     Batal
                   </button>
@@ -1300,7 +1342,7 @@ export default function AdminDashboard() {
                       setIsPejabatFormOpen(false);
                       setEditingPejabat(null);
                     }}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-gray-500 hover:text-gray-900"
                   >
                     Batal
                   </button>
@@ -1309,7 +1351,7 @@ export default function AdminDashboard() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div className="space-y-6">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">
                         Nama Lengkap
                       </label>
                       <input
@@ -1324,7 +1366,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">
                         Jabatan
                       </label>
                       <input
@@ -1339,7 +1381,7 @@ export default function AdminDashboard() {
                     </div>
 
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">
                         Urutan Tampilan
                       </label>
                       <input
@@ -1355,7 +1397,7 @@ export default function AdminDashboard() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">
                       Foto Pejabat
                     </label>
                     <div className="space-y-4">
@@ -1410,7 +1452,7 @@ export default function AdminDashboard() {
                       setIsPejabatFormOpen(false);
                       setEditingPejabat(null);
                     }}
-                    className="px-6 py-2.5 bg-gray-100 text-gray-700 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium"
+                    className="px-6 py-2.5 bg-gray-100 text-gray-900 border border-gray-200 rounded-lg hover:bg-gray-200 font-medium"
                   >
                     Batal
                   </button>
@@ -1428,7 +1470,7 @@ export default function AdminDashboard() {
               <div className="bg-white rounded-lg shadow p-6 space-y-6">
                 <h2 className="text-xl font-bold text-gray-800 border-b pb-4">Konten Header Layanan</h2>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Judul Halaman</label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Judul Halaman</label>
                   <input
                     type="text"
                     value={layananContent.title}
@@ -1437,7 +1479,7 @@ export default function AdminDashboard() {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Halaman</label>
+                  <label className="block text-sm font-semibold text-gray-900 mb-2">Deskripsi Halaman</label>
                   <textarea
                     value={layananContent.deskripsi}
                     onChange={(e) => setLayananContent({ ...layananContent, deskripsi: e.target.value })}
@@ -1475,7 +1517,7 @@ export default function AdminDashboard() {
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {['integrasi', 'kunjungan'].map(type => (
                       <div key={type} className="space-y-4">
-                        <h3 className="font-bold text-lg text-gray-700 capitalize border-l-4 border-blue-500 pl-3">
+                        <h3 className="font-bold text-lg text-gray-900 capitalize border-l-4 border-blue-500 pl-3">
                           {type === 'integrasi' ? 'Layanan Integrasi' : 'Alur Kunjungan'}
                         </h3>
                         {layananItems.filter(i => i.type === type).length === 0 ? (
@@ -1490,7 +1532,7 @@ export default function AdminDashboard() {
                                   </div>
                                 )}
                                 <div>
-                                  <h4 className="font-bold text-sm">{item.title}</h4>
+                                  <h4 className="font-bold text-sm text-gray-900">{item.title}</h4>
                                 </div>
                               </div>
                               <div className="flex flex-col gap-1">
@@ -1525,7 +1567,7 @@ export default function AdminDashboard() {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">
+                        <label className="block text-sm font-semibold text-gray-900 mb-1">
                           {editingLayananItem?.type === 'kunjungan' ? 'Teks Alur' : 'Judul Poster'}
                         </label>
                         <input
@@ -1537,7 +1579,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Tipe</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-1">Tipe</label>
                         <select
                           value={editingLayananItem?.type || 'integrasi'}
                           onChange={(e) => setEditingLayananItem(prev => ({ ...prev, type: e.target.value }))}
@@ -1550,7 +1592,7 @@ export default function AdminDashboard() {
                     </div>
                     {editingLayananItem?.type === 'integrasi' && (
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Foto Poster</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">Foto Poster</label>
                         <div className="space-y-4">
                           {editingLayananItem?.fotoUrl ? (
                             <div className="relative w-full h-48">
@@ -1576,7 +1618,7 @@ export default function AdminDashboard() {
                     <button onClick={handleSaveLayananItem} disabled={saving || uploading} className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                       {saving ? 'Menyimpan...' : 'Simpan Poster'}
                     </button>
-                    <button onClick={() => { setIsLayananItemFormOpen(false); setEditingLayananItem(null); }} className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg">
+                    <button onClick={() => { setIsLayananItemFormOpen(false); setEditingLayananItem(null); }} className="px-6 py-2.5 bg-gray-100 text-gray-900 rounded-lg">
                       Batal
                     </button>
                   </div>
@@ -1597,7 +1639,7 @@ export default function AdminDashboard() {
                     onClick={() => setActiveKategori(kat)}
                     className={`px-4 py-2 rounded-lg font-medium transition-colors ${activeKategori === kat
                       ? 'bg-blue-600 text-white'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      : 'bg-gray-100 text-gray-900 hover:bg-gray-200'
                     }`}
                   >
                     {kat.charAt(0).toUpperCase() + kat.slice(1)}
@@ -1608,7 +1650,7 @@ export default function AdminDashboard() {
               {kegiatanContent && (
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Judul Halaman</label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">Judul Halaman</label>
                     <input
                       type="text"
                       value={kegiatanContent.title}
@@ -1617,7 +1659,7 @@ export default function AdminDashboard() {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-2">Deskripsi Halaman</label>
+                    <label className="block text-sm font-semibold text-gray-900 mb-2">Deskripsi Halaman</label>
                     <textarea
                       value={kegiatanContent.deskripsi}
                       onChange={(e) => setKegiatanContent({ ...kegiatanContent, deskripsi: e.target.value })}
@@ -1664,7 +1706,7 @@ export default function AdminDashboard() {
                             <img src={item.imageUrl} alt={item.title} className="w-full h-full object-cover" />
                           </div>
                           <div>
-                            <h4 className="font-bold">{item.title}</h4>
+                            <h4 className="font-bold text-gray-900">{item.title}</h4>
                             {item.deskripsi && <p className="text-sm text-gray-600 line-clamp-2">{item.deskripsi}</p>}
                           </div>
                           <div className="flex gap-2 mt-auto pt-2 border-t">
@@ -1697,7 +1739,7 @@ export default function AdminDashboard() {
                   <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-4">
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Nama Program</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-1">Nama Program</label>
                         <input
                           type="text"
                           value={editingKegiatanItem?.title || ''}
@@ -1706,7 +1748,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Deskripsi Program (Opsional)</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-1">Deskripsi Program (Opsional)</label>
                         <textarea
                           value={editingKegiatanItem?.deskripsi || ''}
                           onChange={(e) => setEditingKegiatanItem(prev => ({ ...prev, deskripsi: e.target.value }))}
@@ -1715,7 +1757,7 @@ export default function AdminDashboard() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-semibold text-gray-700 mb-1">Urutan Tampil</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-1">Urutan Tampil</label>
                         <input
                           type="number"
                           value={editingKegiatanItem?.urutan || 0}
@@ -1725,7 +1767,7 @@ export default function AdminDashboard() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-2">Foto Utama</label>
+                      <label className="block text-sm font-semibold text-gray-900 mb-2">Foto Utama</label>
                       <div className="space-y-4">
                         {editingKegiatanItem?.imageUrl ? (
                           <div className="relative w-full aspect-video">
@@ -1746,7 +1788,7 @@ export default function AdminDashboard() {
                       </div>
 
                       <div className="mt-8">
-                        <label className="block text-sm font-semibold text-gray-700 mb-2">Galeri Tambahan Program</label>
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">Galeri Tambahan Program</label>
                         {editingKegiatanItem?.imageUrls && editingKegiatanItem.imageUrls.length > 0 && (
                           <div className="grid grid-cols-3 gap-2 mb-4">
                             {editingKegiatanItem.imageUrls.map((url, idx) => (
@@ -1779,12 +1821,59 @@ export default function AdminDashboard() {
                     <button onClick={handleSaveKegiatanItem} disabled={saving || uploading} className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
                       {saving ? 'Menyimpan...' : 'Simpan Program'}
                     </button>
-                    <button onClick={() => { setIsKegiatanItemFormOpen(false); setEditingKegiatanItem(null); }} className="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg">
+                    <button onClick={() => { setIsKegiatanItemFormOpen(false); setEditingKegiatanItem(null); }} className="px-6 py-2.5 bg-gray-100 text-gray-900 rounded-lg">
                       Batal
                     </button>
                   </div>
                 </div>
               )}
+            </div>
+          </div>
+        )}
+
+        {/* KONTAK TAB */}
+        {activeTab === 'kontak' && contactSettings && (
+          <div className="bg-white rounded-lg shadow p-6 space-y-6">
+            <h2 className="text-xl font-bold text-gray-800 border-b pb-4">Pengaturan Kontak</h2>
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Email
+              </label>
+              <input
+                type="email"
+                value={contactSettings.email}
+                onChange={(e) =>
+                  setContactSettings({ ...contactSettings, email: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                placeholder="Contoh: lpkatangerang1@gmail.com"
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-900 mb-2">
+                Nomor WhatsApp
+              </label>
+              <input
+                type="text"
+                value={contactSettings.whatsappNumber}
+                onChange={(e) =>
+                  setContactSettings({ ...contactSettings, whatsappNumber: e.target.value })
+                }
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                placeholder="Contoh: 6281386241976"
+              />
+              <p className="text-xs text-gray-500 mt-1">Gunakan kode negara (contoh: 62) tanpa tanda plus (+).</p>
+            </div>
+
+            <div className="flex gap-3 pt-4 border-t border-gray-100">
+              <button
+                onClick={handleSaveContact}
+                disabled={saving}
+                className="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50 font-medium transition-colors"
+              >
+                {saving ? 'Menyimpan...' : 'Simpan Kontak'}
+              </button>
             </div>
           </div>
         )}

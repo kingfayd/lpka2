@@ -1,6 +1,5 @@
 import { prisma } from "@/lib/prisma";
 import { Package, ListTree, ShoppingCart, TrendingUp } from "lucide-react";
-
 export default async function MarketplaceDashboard() {
     const [productCount, categoryCount] = await Promise.all([
         prisma.product.count(),
@@ -78,6 +77,7 @@ export default async function MarketplaceDashboard() {
                     </a>
                 </div>
             </section>
+
         </div>
     );
 }

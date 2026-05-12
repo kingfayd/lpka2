@@ -31,7 +31,8 @@ export default async function ProductDetailPage({
         notFound();
     }
 
-    const whatsappNumber = "6281386241976";
+    const settings = await prisma.contactSettings.findFirst();
+    const whatsappNumber = settings?.whatsappNumber || "6281386241976";
     const message = `Halo, saya ingin membeli ${product.name} seharga Rp ${product.price.toLocaleString("id-ID")}. Apakah stok masih ada?`;
     const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
         message
