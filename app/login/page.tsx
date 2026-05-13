@@ -76,13 +76,6 @@ export default function LoginPage() {
             {loading ? 'Memproses...' : 'Login'}
           </button>
         </form>
-        
-        <p className="text-center text-sm text-gray-500 mt-4">
-          Belum punya akun?{' '}
-          <Link href="/register" className="text-blue-600 font-medium hover:underline">
-            Daftar
-          </Link>
-        </p>
       </div>
     </div>
   );
