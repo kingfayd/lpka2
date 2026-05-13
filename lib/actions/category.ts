@@ -18,6 +18,8 @@ export async function createCategory(formData: FormData) {
             data: { name },
         });
         revalidatePath("/admin/marketplace/categories");
+        revalidatePath("/admin/marketplace/products");
+        revalidatePath("/marketplace");
         return { success: true };
     } catch (error) {
         console.error("Create Category Error:", error);
@@ -34,6 +36,8 @@ export async function deleteCategory(formData: FormData) {
             where: { id },
         });
         revalidatePath("/admin/marketplace/categories");
+        revalidatePath("/admin/marketplace/products");
+        revalidatePath("/marketplace");
         return { success: true };
     } catch (error) {
         console.error("Delete Category Error:", error);
