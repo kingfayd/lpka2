@@ -142,39 +142,39 @@ export default function ProductForm({
     };
 
     return (
-        <section className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm mb-8">
+        <section className="bg-white p-4 md:p-6 rounded-xl border border-gray-200 shadow-sm mb-8">
             <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-bold text-gray-900">
-                    {isEditing ? `Edit Produk: ${editProduct.name}` : "Tambah Produk Baru"}
+                <h3 className="text-base md:text-lg font-bold text-gray-900">
+                    {isEditing ? `Edit: ${editProduct.name}` : "Tambah Produk Baru"}
                 </h3>
                 {isEditing && onCancel && (
                     <button
                         type="button"
                         onClick={onCancel}
-                        className="text-gray-400 hover:text-gray-700 transition-colors"
+                        className="text-gray-400 hover:text-gray-700 p-1"
                     >
                         <X size={20} />
                     </button>
                 )}
             </div>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form onSubmit={handleSubmit} className="space-y-5 md:space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Nama Produk</label>
+                        <label className="text-xs md:text-sm font-medium text-gray-700">Nama Produk</label>
                         <input
                             type="text"
                             name="name"
                             defaultValue={editProduct?.name}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                            className="w-full px-3 md:px-4 py-2 md:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black text-sm md:text-base"
                             required
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Kategori</label>
+                        <label className="text-xs md:text-sm font-medium text-gray-700">Kategori</label>
                         <select
                             name="categoryId"
                             defaultValue={editProduct?.categoryId}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black appearance-none"
+                            className="w-full px-3 md:px-4 py-2 md:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black appearance-none text-sm md:text-base"
                             required
                         >
                             <option value="">Pilih Kategori</option>
@@ -186,40 +186,40 @@ export default function ProductForm({
                         </select>
                     </div>
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Harga (Rp)</label>
+                        <label className="text-xs md:text-sm font-medium text-gray-700">Harga (Rp)</label>
                         <input
                             type="number"
                             name="price"
                             step="0.01"
                             defaultValue={editProduct?.price}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                            className="w-full px-3 md:px-4 py-2 md:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black text-sm md:text-base"
                             required
                         />
                     </div>
                     <div className="space-y-2">
-                        <label className="text-sm font-medium text-gray-700">Stok</label>
+                        <label className="text-xs md:text-sm font-medium text-gray-700">Stok</label>
                         <input
                             type="number"
                             name="stock"
                             defaultValue={editProduct?.stock ?? 0}
-                            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                            className="w-full px-3 md:px-4 py-2 md:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black text-sm md:text-base"
                         />
                     </div>
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700">Deskripsi</label>
+                    <label className="text-xs md:text-sm font-medium text-gray-700">Deskripsi</label>
                     <textarea
                         name="description"
                         rows={3}
                         defaultValue={editProduct?.description || ""}
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black"
+                        className="w-full px-3 md:px-4 py-2 md:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-black text-sm md:text-base"
                     />
                 </div>
 
                 <div className="space-y-2">
-                    <label className="text-sm font-medium text-gray-700 flex items-center gap-2">
-                        <ShoppingBag size={16} className="text-[#EE4D2D]" />
+                    <label className="text-xs md:text-sm font-medium text-gray-700 flex items-center gap-2">
+                        <ShoppingBag size={14} className="text-[#EE4D2D]" />
                         Link Shopee (opsional)
                     </label>
                     <input
@@ -227,18 +227,18 @@ export default function ProductForm({
                         name="shopeeUrl"
                         defaultValue={editProduct?.shopeeUrl || ""}
                         placeholder="https://shopee.co.id/..."
-                        className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-black"
+                        className="w-full px-3 md:px-4 py-2 md:py-2.5 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-orange-400 text-black text-sm md:text-base"
                     />
                 </div>
 
                 {/* Gambar Utama (Thumbnail) */}
-                <div className="space-y-2 border-t pt-4">
-                    <label className="text-sm font-bold text-gray-900">
+                <div className="space-y-2 border-t pt-4 md:pt-5">
+                    <label className="text-xs md:text-sm font-bold text-gray-900">
                         Gambar Utama (Thumbnail Katalog)
                     </label>
-                    <div className="flex items-center gap-4">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                         <div
-                            className="relative w-32 h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
+                            className="relative w-full sm:w-32 aspect-square sm:aspect-auto sm:h-32 border-2 border-dashed border-gray-300 rounded-xl flex items-center justify-center overflow-hidden bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer"
                             onClick={() => document.getElementById("image-upload")?.click()}
                         >
                             {preview ? (
@@ -256,7 +256,7 @@ export default function ProductForm({
                                             setPreview(isEditing ? (editProduct.imageUrl || null) : null);
                                             setImage(null);
                                         }}
-                                        className="absolute top-1 right-1 bg-white p-1 rounded-full shadow-md text-gray-600 hover:text-red-600 transition-colors"
+                                        className="absolute top-2 right-2 bg-white/90 p-1.5 rounded-full shadow-md text-gray-600 hover:text-red-600 transition-colors"
                                     >
                                         <X size={16} />
                                     </button>
@@ -264,7 +264,7 @@ export default function ProductForm({
                             ) : (
                                 <div className="text-center text-gray-400">
                                     <Upload className="mx-auto mb-1" size={24} />
-                                    <span className="text-xs">Upload</span>
+                                    <span className="text-xs">Klik untuk Upload</span>
                                 </div>
                             )}
                         </div>
@@ -275,24 +275,26 @@ export default function ProductForm({
                             accept="image/*"
                             onChange={handleImageChange}
                         />
-                        <div className="text-xs text-gray-500">
-                            <p>Gambar yang muncul di halaman depan.</p>
-                            <p>Maks. 2MB</p>
+                        <div className="text-[10px] md:text-xs text-gray-500">
+                            <p className="font-medium text-gray-700">Persyaratan Gambar:</p>
+                            <p>• Muncul di halaman katalog utama</p>
+                            <p>• Ukuran maksimal 2MB</p>
+                            <p>• Format: JPG, PNG, WEBP</p>
                         </div>
                     </div>
                 </div>
 
                 {/* Media Slider (Multi Photos & Videos) */}
-                <div className="space-y-3 border-t pt-4">
+                <div className="space-y-3 border-t pt-4 md:pt-5">
                     <div className="flex items-center justify-between">
-                        <label className="text-sm font-bold text-gray-900">
+                        <label className="text-xs md:text-sm font-bold text-gray-900">
                             Galeri Detail (Foto & Video)
                         </label>
                         <button
                             type="button"
                             onClick={() => document.getElementById("media-upload")?.click()}
                             disabled={uploadingMedia}
-                            className="text-xs bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-1.5 disabled:opacity-50"
+                            className="text-[10px] md:text-xs bg-gray-900 text-white px-3 py-1.5 rounded-lg hover:bg-gray-800 transition-colors flex items-center gap-1.5 disabled:opacity-50"
                         >
                             {uploadingMedia ? <Loader2 className="animate-spin" size={14} /> : <Upload size={14} />}
                             Tambah Media
@@ -307,7 +309,7 @@ export default function ProductForm({
                         />
                     </div>
                     
-                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-2 md:gap-3">
                         {media.map((m, index) => (
                             <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 bg-gray-50 group">
                                 {m.type === "IMAGE" ? (
@@ -325,7 +327,7 @@ export default function ProductForm({
                                 <button
                                     type="button"
                                     onClick={() => removeMedia(index)}
-                                    className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-md opacity-0 group-hover:opacity-100 transition-opacity"
+                                    className="absolute top-1 right-1 bg-red-600 text-white p-1 rounded-md md:opacity-0 md:group-hover:opacity-100 transition-opacity"
                                 >
                                     <X size={12} />
                                 </button>
@@ -335,28 +337,28 @@ export default function ProductForm({
                             </div>
                         ))}
                         {media.length === 0 && !uploadingMedia && (
-                            <div className="col-span-full py-8 border-2 border-dashed border-gray-200 rounded-lg text-center text-gray-400 text-xs">
+                            <div className="col-span-full py-6 md:py-8 border-2 border-dashed border-gray-200 rounded-lg text-center text-gray-400 text-[10px] md:text-xs">
                                 Belum ada foto/video tambahan.
                             </div>
                         )}
                         {uploadingMedia && (
                             <div className="aspect-square border-2 border-dashed border-blue-200 rounded-lg flex flex-col items-center justify-center text-blue-500 animate-pulse">
-                                <Loader2 className="animate-spin mb-1" size={20} />
-                                <span className="text-[10px]">Uploading...</span>
+                                <Loader2 className="animate-spin mb-1" size={16} />
+                                <span className="text-[8px] md:text-[10px]">Uploading...</span>
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="flex gap-3 pt-4">
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
                     <button
                         type="submit"
                         disabled={loading || uploadingMedia}
-                        className="flex-1 bg-blue-600 text-white px-6 py-4 rounded-xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2 font-bold disabled:bg-gray-400 shadow-lg shadow-blue-100"
+                        className="flex-1 bg-blue-600 text-white px-6 py-3.5 md:py-4 rounded-xl hover:bg-blue-700 transition-all flex items-center justify-center gap-2 font-bold disabled:bg-gray-400 shadow-lg shadow-blue-100 text-sm md:text-base"
                     >
                         {loading ? (
                             <>
-                                <Loader2 className="animate-spin" size={20} />
+                                <Loader2 className="animate-spin" size={18} />
                                 {isEditing ? "Menyimpan..." : "Menambahkan..."}
                             </>
                         ) : (
@@ -367,7 +369,7 @@ export default function ProductForm({
                         <button
                             type="button"
                             onClick={onCancel}
-                            className="px-6 py-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                            className="px-6 py-3.5 md:py-4 rounded-xl border border-gray-300 text-gray-700 hover:bg-gray-50 transition-colors font-medium text-sm md:text-base"
                         >
                             Batal
                         </button>

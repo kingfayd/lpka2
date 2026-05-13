@@ -1,8 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Package, LayoutDashboard, ListTree, ArrowLeft } from "lucide-react";
+import { Package, LayoutDashboard, ListTree, ArrowLeft, Menu, X as CloseIcon } from "lucide-react";
 
 export default function MarketplaceAdminLayout({
     children,
@@ -10,6 +11,7 @@ export default function MarketplaceAdminLayout({
     children: React.ReactNode;
 }) {
     const pathname = usePathname();
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const navItems = [
         {
@@ -33,9 +35,30 @@ export default function MarketplaceAdminLayout({
     ];
 
     return (
-        <div className="flex min-h-screen bg-gray-50 text-black">
+        <div className="flex min-h-screen bg-gray-50 text-black relative">
+            {/* Mobile Header Toggle */}
+            <div className="lg:hidden fixed top-4 left-4 z-50">
+                <button
+                    onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                    className="p-3 bg-white rounded-xl shadow-lg border border-gray-100 text-gray-600 hover:text-blue-600 transition-all"
+                >
+                    {isSidebarOpen ? <CloseIcon size={24} /> : <Menu size={24} />}
+                </button>
+            </div>
+
+            {/* Sidebar Overlay */}
+            {isSidebarOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/20 backdrop-blur-sm z-40 lg:hidden"
+                    onClick={() => setIsSidebarOpen(false)}
+                />
+            )}
+
             {/* Sidebar */}
-            <aside className="w-64 bg-white border-r border-gray-200 flex flex-col fixed inset-y-0">
+            <aside className={`
+                w-64 bg-white border-r border-gray-200 flex flex-col fixed inset-y-0 z-40 transition-transform duration-300
+                ${isSidebarOpen ? "translate-x-0" : "-translate-x-full lg:translate-x-0"}
+            `}>
                 <div className="p-6 border-b border-gray-100">
                     <h1 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                         <Package className="text-blue-600" />
@@ -48,6 +71,7 @@ export default function MarketplaceAdminLayout({
                         <Link
                             key={item.name}
                             href={item.href}
+                            onClick={() => setIsSidebarOpen(false)}
                             className={`flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${
                                 item.active
                                     ? "bg-blue-50 text-blue-600 font-bold shadow-sm"
@@ -72,7 +96,7 @@ export default function MarketplaceAdminLayout({
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 ml-64 p-8">
+            <main className={`flex-1 transition-all duration-300 lg:ml-64 p-4 md:p-8 pt-20 lg:pt-8`}>
                 <div className="max-w-6xl mx-auto">
                     {children}
                 </div>
