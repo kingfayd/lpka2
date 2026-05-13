@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { X, ZoomIn } from 'lucide-react';
 
 interface LayananContent {
   title: string;
@@ -20,6 +21,7 @@ export default function LayananInformasiPublik() {
   const [content, setContent] = useState<LayananContent | null>(null);
   const [items, setItems] = useState<LayananItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     fetchData();
@@ -86,12 +88,20 @@ export default function LayananInformasiPublik() {
                   key={item.id}
                   className="bg-white/95 backdrop-blur-sm border border-gray-100/50 p-6 rounded-3xl shadow-lg hover:scale-[1.02] transition-all duration-300 group"
                 >
-                  <div className="aspect-[3/4] bg-gray-100 rounded-2xl overflow-hidden mb-5">
+                  <div 
+                    className="aspect-[3/4] bg-gray-100 rounded-2xl overflow-hidden mb-5 cursor-zoom-in relative group/img"
+                    onClick={() => setSelectedImage(item.fotoUrl)}
+                  >
                     <img
                       src={item.fotoUrl}
                       alt={item.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                     />
+                    <div className="absolute inset-0 bg-black/20 opacity-0 group-hover/img:opacity-100 transition-opacity flex items-center justify-center">
+                      <div className="bg-white/20 backdrop-blur-md p-3 rounded-full text-white">
+                        <ZoomIn size={24} />
+                      </div>
+                    </div>
                   </div>
                   <h3 className="text-xl font-bold text-gray-900 text-center">
                     {item.title}
@@ -132,6 +142,35 @@ export default function LayananInformasiPublik() {
           </div>
         </div>
       </div>
+
+      {/* LIGHTBOX MODAL */}
+      {selectedImage && (
+        <div 
+          className="fixed inset-0 bg-black/95 z-[9999] flex items-center justify-center p-4 md:p-10 cursor-zoom-out animate-in fade-in duration-300"
+          onClick={() => setSelectedImage(null)}
+        >
+          <button 
+            className="fixed top-6 right-6 text-white/70 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-full z-50"
+            onClick={(e) => {
+              e.stopPropagation();
+              setSelectedImage(null);
+            }}
+          >
+            <X size={32} />
+          </button>
+          
+          <div 
+            className="relative max-w-5xl w-full h-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <img 
+              src={selectedImage} 
+              alt="Full View" 
+              className="max-w-full max-h-full object-contain rounded-lg shadow-2xl animate-in zoom-in-95 duration-500"
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
