@@ -75,6 +75,10 @@ interface ContactSettings {
   id?: string;
   email: string;
   whatsappNumber: string;
+  instagram?: string;
+  facebook?: string;
+  twitter?: string;
+  tiktok?: string;
 }
 
 export default function AdminDashboard() {
@@ -1864,6 +1868,68 @@ export default function AdminDashboard() {
                 placeholder="Contoh: 6281386241976"
               />
               <p className="text-xs text-gray-500 mt-1">Gunakan kode negara (contoh: 62) tanpa tanda plus (+).</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Link Instagram
+                </label>
+                <input
+                  type="text"
+                  value={contactSettings.instagram || ''}
+                  onChange={(e) =>
+                    setContactSettings({ ...contactSettings, instagram: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                  placeholder="Contoh: https://instagram.com/username"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Link Facebook
+                </label>
+                <input
+                  type="text"
+                  value={contactSettings.facebook || ''}
+                  onChange={(e) =>
+                    setContactSettings({ ...contactSettings, facebook: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                  placeholder="Contoh: https://facebook.com/username"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Link Twitter (X)
+                </label>
+                <input
+                  type="text"
+                  value={contactSettings.twitter || ''}
+                  onChange={(e) =>
+                    setContactSettings({ ...contactSettings, twitter: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                  placeholder="Contoh: https://twitter.com/username"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-semibold text-gray-900 mb-2">
+                  Link TikTok
+                </label>
+                <input
+                  type="text"
+                  value={contactSettings.tiktok || ''}
+                  onChange={(e) =>
+                    setContactSettings({ ...contactSettings, tiktok: e.target.value })
+                  }
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
+                  placeholder="Contoh: https://tiktok.com/@username"
+                />
+              </div>
             </div>
 
             <div className="flex gap-3 pt-4 border-t border-gray-100">

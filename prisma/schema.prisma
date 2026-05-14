@@ -145,5 +145,9 @@ model ContactSettings {
   id             String   @id @default(cuid())
   email          String   @default("lpkatangerang1@gmail.com")
   whatsappNumber String   @default("6281386241976")
+  instagram      String?
+  facebook       String?
+  twitter        String?
+  tiktok         String?
   updatedAt      DateTime @updatedAt
 }

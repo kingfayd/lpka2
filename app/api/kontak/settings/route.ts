@@ -27,7 +27,7 @@ export async function GET() {
 export async function PUT(request: Request) {
     try {
         const body = await request.json();
-        const { email, whatsappNumber } = body;
+        const { email, whatsappNumber, instagram, facebook, twitter, tiktok } = body;
 
         if (!email || !whatsappNumber) {
             return NextResponse.json(
@@ -38,14 +38,23 @@ export async function PUT(request: Request) {
 
         let settings = await prisma.contactSettings.findFirst();
 
+        const data = {
+            email,
+            whatsappNumber,
+            instagram,
+            facebook,
+            twitter,
+            tiktok
+        };
+
         if (settings) {
             settings = await prisma.contactSettings.update({
                 where: { id: settings.id },
-                data: { email, whatsappNumber }
+                data
             });
         } else {
             settings = await prisma.contactSettings.create({
-                data: { email, whatsappNumber }
+                data
             });
         }
 
