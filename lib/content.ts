@@ -16,9 +16,7 @@ export interface SambutanContent {
   fotoUrl: string;
   nama: string;
   jabatan: string;
-  sambutan1: string;
-  sambutan2: string;
-  sambutan3: string;
+  sambutan: string;
   updatedAt?: Date;
 }
 
@@ -109,12 +107,8 @@ const DEFAULT_SAMBUTAN: SambutanContent = {
   fotoUrl: '/images/ketua-lpka.jpg',
   nama: 'Aldikan Nasution, A.md.IP., S.H., M.Si.',
   jabatan: 'Kepala LPKA Kelas I Tangerang',
-  sambutan1:
-    'Assalamu\'alaikum Warahmatullahi Wabarakatuh.',
-  sambutan2:
-    'Puji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa, atas rahmat dan karunia-Nya website resmi Lembaga Pembinaan Khusus Anak Kelas I Tangerang ini dapat hadir sebagai sarana informasi dan pelayanan kepada masyarakat.',
-  sambutan3:
-    'Kami berkomitmen untuk terus meningkatkan pembinaan, pengawasan, serta pelayanan terbaik dalam rangka membentuk pribadi anak binaan yang mandiri, berakhlak, dan siap kembali ke masyarakat.',
+  sambutan:
+    'Assalamu\'alaikum Warahmatullahi Wabarakatuh.\n\nPuji syukur kita panjatkan ke hadirat Tuhan Yang Maha Esa, atas rahmat dan karunia-Nya website resmi Lembaga Pembinaan Khusus Anak Kelas I Tangerang ini dapat hadir sebagai sarana informasi dan pelayanan kepada masyarakat.\n\nKami berkomitmen untuk terus meningkatkan pembinaan, pengawasan, serta pelayanan terbaik dalam rangka membentuk pribadi anak binaan yang mandiri, berakhlak, dan siap kembali ke masyarakat.',
 };
 
 export async function getSambutanContent(): Promise<SambutanContent> {
@@ -137,9 +131,7 @@ export async function getSambutanContent(): Promise<SambutanContent> {
       fotoUrl: content.fotoUrl,
       nama: content.nama,
       jabatan: content.jabatan,
-      sambutan1: content.sambutan1,
-      sambutan2: content.sambutan2,
-      sambutan3: content.sambutan3,
+      sambutan: content.sambutan,
       updatedAt: content.updatedAt
     };
   } catch (error) {
@@ -176,9 +168,7 @@ export async function updateSambutanContent(content: Partial<SambutanContent>): 
         fotoUrl: updated.fotoUrl,
         nama: updated.nama,
         jabatan: updated.jabatan,
-        sambutan1: updated.sambutan1,
-        sambutan2: updated.sambutan2,
-        sambutan3: updated.sambutan3,
+        sambutan: updated.sambutan,
         updatedAt: updated.updatedAt
       };
     } else {
@@ -191,9 +181,7 @@ export async function updateSambutanContent(content: Partial<SambutanContent>): 
         fotoUrl: created.fotoUrl,
         nama: created.nama,
         jabatan: created.jabatan,
-        sambutan1: created.sambutan1,
-        sambutan2: created.sambutan2,
-        sambutan3: created.sambutan3,
+        sambutan: created.sambutan,
         updatedAt: created.updatedAt
       };
     }

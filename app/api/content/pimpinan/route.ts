@@ -28,9 +28,9 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json();
     
-    const { fotoUrl, nama, jabatan, sambutan1, sambutan2, sambutan3 } = body;
+    const { fotoUrl, nama, jabatan, sambutan } = body;
 
-    if (!fotoUrl || !nama || !jabatan || !sambutan1 || !sambutan2 || !sambutan3) {
+    if (!fotoUrl || !nama || !jabatan || !sambutan) {
       return NextResponse.json(
         { error: 'Semua field diperlukan' },
         { status: 400 }
@@ -41,9 +41,7 @@ export async function PUT(request: NextRequest) {
       fotoUrl,
       nama,
       jabatan,
-      sambutan1,
-      sambutan2,
-      sambutan3,
+      sambutan,
     });
 
     return NextResponse.json(

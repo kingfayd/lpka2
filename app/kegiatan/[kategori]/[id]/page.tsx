@@ -94,10 +94,7 @@ export default function KegiatanDetailPage() {
                   </h1>
                 </div>
 
-                <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                  <p className="text-gray-600 max-w-3xl">
-                    Detail program akan ditampilkan di halaman ini dengan informasi lengkap dan galeri foto.
-                  </p>
+                <div>
                   <Link href={`/kegiatan/${kategori}`} className="inline-flex items-center rounded-full bg-slate-900 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-slate-800 transition-colors">
                     Kembali ke {categoryLabel}
                   </Link>

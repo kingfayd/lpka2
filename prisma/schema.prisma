@@ -24,9 +24,7 @@ model SambutanContent {
   fotoUrl   String
   nama      String
   jabatan   String
-  sambutan1 String
-  sambutan2 String
-  sambutan3 String
+  sambutan  String
   updatedAt DateTime @default(now()) @updatedAt
 }
 

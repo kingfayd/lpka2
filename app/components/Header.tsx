@@ -11,17 +11,17 @@ import { useTranslations, useLocale } from 'next-intl';
 export default function Header() {
   const pathname = usePathname();
   const router = useRouter();
+  const locale = useLocale();
+  const t = useTranslations('nav');
+  const [open, setOpen] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
   const hideHeaderPaths = ["/admin", "/login", "/register", "/auth", "/berita", "/marketplace"];
   const isAdminPage = hideHeaderPaths.some(path => pathname?.startsWith(path));
 
   if (isAdminPage) {
     return null;
   }
-
-  const locale = useLocale();
-  const t = useTranslations('nav');
-  const [open, setOpen] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const toggleLanguage = () => {
     const newLocale = locale === 'id' ? 'en' : 'id';

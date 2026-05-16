@@ -18,9 +18,7 @@ interface SambutanContent {
   fotoUrl: string;
   nama: string;
   jabatan: string;
-  sambutan1: string;
-  sambutan2: string;
-  sambutan3: string;
+  sambutan: string;
 }
 
 interface Article {
@@ -1049,42 +1047,15 @@ export default function AdminDashboard() {
 
             <div>
               <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Paragraf 1
+                Isi Sambutan
               </label>
+              <p className="text-xs text-gray-500 mb-2">Tekan Enter dua kali untuk membuat paragraf baru.</p>
               <textarea
-                value={sambutanContent.sambutan1}
+                value={sambutanContent.sambutan}
                 onChange={(e) =>
-                  setSambutanContent({ ...sambutanContent, sambutan1: e.target.value })
+                  setSambutanContent({ ...sambutanContent, sambutan: e.target.value })
                 }
-                rows={2}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Paragraf 2
-              </label>
-              <textarea
-                value={sambutanContent.sambutan2}
-                onChange={(e) =>
-                  setSambutanContent({ ...sambutanContent, sambutan2: e.target.value })
-                }
-                rows={3}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-gray-900 mb-2">
-                Paragraf 3
-              </label>
-              <textarea
-                value={sambutanContent.sambutan3}
-                onChange={(e) =>
-                  setSambutanContent({ ...sambutanContent, sambutan3: e.target.value })
-                }
-                rows={3}
+                rows={10}
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-gray-900"
               />
             </div>

@@ -6,9 +6,7 @@ interface SambutanContent {
   fotoUrl: string;
   nama: string;
   jabatan: string;
-  sambutan1: string;
-  sambutan2: string;
-  sambutan3: string;
+  sambutan: string;
 }
 
 export default function SambutanSection() {
@@ -72,17 +70,9 @@ export default function SambutanSection() {
             {content.jabatan}
           </h2>
 
-          <p className="text-gray-600 leading-relaxed mb-4">
-            {content.sambutan1}
-          </p>
-
-          <p className="text-gray-600 leading-relaxed mb-4">
-            {content.sambutan2}
-          </p>
-
-          <p className="text-gray-600 leading-relaxed mb-6">
-            {content.sambutan3}
-          </p>
+          <div className="text-gray-600 leading-relaxed mb-6 whitespace-pre-line">
+            {content.sambutan}
+          </div>
 
           <div className="mt-6">
             <p className="font-semibold text-slate-900">
